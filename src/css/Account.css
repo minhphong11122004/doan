@@ -1,11 +1,26 @@
 body {
     font-family: 'Roboto', sans-serif;
-    background-color: #fce3c5; /* Màu nền mới */
+    background-color: #fce3c5;
     margin: 0;
     padding: 0;
     color: #333;
+    max-width: 1550px;
 }
 
+
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+        padding: 0 10px;
+    }
+}
 .custom-container {
     display: flex;
     max-width: 1200px;
@@ -89,9 +104,26 @@ label {
     color: #333;
 }
 
-input[type="text"],
+input[type="text"]{
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #444;
+    transition: border 0.3s ease;
+
+}
 input[type="email"],
-input[type="password"],
+input[type="password"]{
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+   
+    transition: border 0.3s ease;
+}
 input[type="file"] {
     width: 100%;
     padding: 12px;

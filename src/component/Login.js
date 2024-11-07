@@ -57,18 +57,20 @@ const Login = () => {
           <div className="underline"></div>
         </div>
         <div className="inputs">
-          <div className="input">
+          <div className="inp">
             <img src={User_icon} alt="" />
             <input
+            className="log"
               type="text"
-              placeholder="userID"
+              placeholder="UserID"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
             />
           </div>
-          <div className="input">
+          <div className="inp">
             <img src={password_icon} alt="" />
             <input
+            className="log"
               type="password"
               placeholder="Password"
               value={password}

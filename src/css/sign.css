@@ -42,10 +42,11 @@
     background: #eaeaea;
     border: none;
     border-radius: 6px;
+
 }
 
 .container1 input:focus {
-    background-color: #f5f5f5;
+    background-color: #eaeaea;
     
 }
 
