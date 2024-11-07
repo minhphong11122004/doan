@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import {
   Container,
   Form,
@@ -40,15 +39,13 @@ function ThanhToan() {
   };
 
   return (
-    <Container
-      className="my-5 p-4 border rounded"
-      style={{ maxWidth: "500px" }}
-    >
-      <h2 className="mb-4">Nhập thông tin để xác nhận thanh toán</h2>
+    <Container className="thanhtoan-container">
+      <h2 className="thanhtoan-header">Nhập thông tin để xác nhận thanh toán</h2>
       <Form>
         <FormGroup>
-          <Label for="name">Tên:</Label>
+          <Label className="thanhtoan-label" for="name">Tên:</Label>
           <Input
+            className="thanhtoan-input"
             type="text"
             id="name"
             placeholder="Nhập tên của bạn"
@@ -58,8 +55,9 @@ function ThanhToan() {
         </FormGroup>
 
         <FormGroup>
-          <Label for="phone">Số điện thoại:</Label>
+          <Label className="thanhtoan-label" for="phone">Số điện thoại:</Label>
           <Input
+            className="thanhtoan-input"
             type="tel"
             id="phone"
             placeholder="Nhập số điện thoại"
@@ -69,8 +67,9 @@ function ThanhToan() {
         </FormGroup>
 
         <FormGroup>
-          <Label for="address">Địa chỉ:</Label>
+          <Label className="thanhtoan-label" for="address">Địa chỉ:</Label>
           <Input
+            className="thanhtoan-input"
             type="text"
             id="address"
             placeholder="Nhập địa chỉ nhận hàng"
@@ -81,17 +80,17 @@ function ThanhToan() {
 
         <h3>Đơn Hàng</h3>
         {orderItems.map((item, index) => (
-          <Row key={index} className="d-flex justify-content-between` my-2">
-            <Col>{item.name}</Col>
-            <Col className="text-right">{item.price} VND</Col>
+          <Row key={index} className="thanhtoan-row">
+            <Col className="thanhtoan-col">{item.name}</Col>
+            <Col className="thanhtoan-text-right">{item.price} VND</Col>
           </Row>
         ))}
 
-        <div className="text-right font-weight-bold mt-3">
+        <div className="thanhtoan-font-weight-bold thanhtoan-text-right mt-3">
           Tổng tiền: <span>{total}</span> VND
         </div>
 
-        <Button color="success" className="w-100 mt-4" onClick={handleOrder}>
+        <Button className="thanhtoan-button" onClick={handleOrder}>
           Xác nhận thanh toán
         </Button>
       </Form>

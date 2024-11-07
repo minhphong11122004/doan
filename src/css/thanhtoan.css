@@ -1,5 +1,5 @@
 /* CSS cho component ThanhToan */
-.container {
+.thanhtoan-container {
     background-color: #ffffff;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -9,7 +9,7 @@
     font-family: 'Arial', sans-serif;
 }
 
-h2 {
+.thanhtoan-header {
     font-size: 1.8rem;
     font-weight: bold;
     color: #333;
@@ -17,13 +17,13 @@ h2 {
     margin-bottom: 20px;
 }
 
-label {
+.thanhtoan-label {
     font-size: 0.9rem;
     font-weight: 600;
     color: #555;
 }
 
-input {
+.thanhtoan-input {
     border-radius: 5px;
     border: 1px solid #ddd;
     padding: 10px;
@@ -32,35 +32,35 @@ input {
     transition: border-color 0.3s;
 }
 
-input:focus {
+.thanhtoan-input:focus {
     border-color: #007bff;
     outline: none;
 }
 
-.row {
+.thanhtoan-row {
     padding: 8px 0;
     border-bottom: 1px solid #eee;
 }
 
-.row:last-child {
+.thanhtoan-row:last-child {
     border-bottom: none;
 }
 
-.col {
+.thanhtoan-col {
     font-size: 0.9rem;
 }
 
-.text-right {
+.thanhtoan-text-right {
     text-align: right;
 }
 
-.font-weight-bold {
+.thanhtoan-font-weight-bold {
     font-weight: bold;
     font-size: 1.1rem;
     color: #000;
 }
 
-button {
+.thanhtoan-button {
     border: none;
     border-radius: 5px;
     padding: 12px;
@@ -69,8 +69,10 @@ button {
     background-color: #28a745;
     cursor: pointer;
     transition: background-color 0.3s;
+    width: 100%;
+    margin-top: 20px;
 }
 
-button:hover {
+.thanhtoan-button:hover {
     background-color: #218838;
 }
