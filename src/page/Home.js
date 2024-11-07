@@ -35,10 +35,10 @@ function  Home (){
         <div className="logo">
             <div  className="box">
             <h1>
-                vòng tay trang sức cao cấp
+                Vòng tay trang sức cao cấp
             </h1>
             <p>
-                Ổ đây có bán trang sức đẹp
+                Ở đây có bán trang sức đẹp
             </p>
             <button className="button1">
                 Mua ngay kẻo hết
