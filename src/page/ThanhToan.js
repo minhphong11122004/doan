@@ -13,7 +13,6 @@ import {
   ModalBody,
   ModalFooter,
 } from "reactstrap";
-import QRCode from "qrcode.react"; // Import QRCode component
 import "../css/thanhtoan.css";
 
 function ThanhToan() {
@@ -161,3 +160,4 @@ function ThanhToan() {
 }
 
 export default ThanhToan;
+  
