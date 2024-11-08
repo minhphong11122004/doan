@@ -37,11 +37,21 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={<Home handleAddToCart={handleAddToCart} />}
+            element={
+              <Home
+                handleAddToCart={handleAddToCart}
+                setCartItems={setCartItems}
+              />
+            }
           />
           <Route
             path="/product"
-            element={<Product handleAddToCart={handleAddToCart} />}
+            element={
+              <Product
+                handleAddToCart={handleAddToCart}
+                setCartItems={setCartItems}
+              />
+            }
           />
           <Route path="/account" element={<Account />} />
           <Route path="/signup" element={<Signup />} />
