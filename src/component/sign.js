@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom"; // Nhập useNavigate
 import "../css/sign.css";
+import User_icon from "../Assets/person.png";
+import email_icon from "../Assets/email.png";
+import password_icon from "../Assets/password.png";
 
 function Signup() {
   const navigate = useNavigate(); // Khởi tạo useNavigate
@@ -74,8 +77,10 @@ function Signup() {
         <div className="text">Sign Up</div>
 
         <div className="inputs">
-          <div className="input">
+          <div className="inp">
+          <img src={User_icon} alt="" />
             <input
+              className="log"
               type="text"
               placeholder="User ID"
               name="userid"
@@ -83,8 +88,10 @@ function Signup() {
               onChange={handleInput}
             />
           </div>
-          <div className="input">
+          <div className="inp">
+          <img src={password_icon} alt="" />
             <input
+              className="log"
               type="password"
               placeholder="Password"
               name="password"

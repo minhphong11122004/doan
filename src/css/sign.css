@@ -42,13 +42,12 @@
     background: #eaeaea;
     border: none;
     border-radius: 6px;
-    outline: none;
-    transition: background-color 0.3s, box-shadow 0.3s;
+
 }
 
 .container1 input:focus {
-    background-color: #f5f5f5;
-    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.1);
+    background-color: #eaeaea;
+    
 }
 
 /* Button styling */
