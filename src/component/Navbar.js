@@ -4,16 +4,16 @@ import { useState, useEffect } from "react";
 
 function Navbar({ cartCount }) {
   const navigate = useNavigate();
-  const [userId, setUserId] = useState(localStorage.getItem("userId"));
+  const [username, setUserId] = useState(localStorage.getItem("username"));
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("userId");
+    const storedUserId = localStorage.getItem("username");
     setUserId(storedUserId);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("userId");
+    localStorage.removeItem("username");
     setUserId(null);
     navigate("/");
     window.location.reload();
@@ -44,10 +44,10 @@ function Navbar({ cartCount }) {
         <input type="text" className="search-input" placeholder="Tìm kiếm" />
       </div>
       <div className="navbar-user">
-        {userId ? (
+        {username ? (
           <>
             <Link to={`/account`} className="user-id">
-              {userId}
+              {username}
             </Link>
             <button onClick={handleLogout} className="logout">
               Đăng xuất

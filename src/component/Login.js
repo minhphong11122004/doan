@@ -9,26 +9,26 @@ import password_icon from "../Assets/password.png";
 const Login = () => {
   const navigate = useNavigate();
   const [action, setAction] = useState("Login");
-  const [userId, setUserId] = useState("");
+  const [username, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
   const handleLogin = async () => {
     try {
-      const response = await axios.get("https://localhost:7256/api/Account");
+      const response = await axios.get("https://localhost:7256/api/Users");
       const users = response.data;
       const user = users.find(
-        (user) => user.userid === userId && user.password === password
+        (user) => user.username === username && user.password === password
       );
 
       if (user) {
         alert("Login successful!");
         localStorage.setItem("isLoggedIn", true);
-        localStorage.setItem("userId", userId);
+        localStorage.setItem("username", username);
         navigate("/");
         window.location.reload();
       } else {
-        alert("Invalid credentials. Please try again.");
+        alert("sai tài khoản hoặc mật khẩu xin đăng nhập lại");
       }
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -37,7 +37,6 @@ const Login = () => {
   };
 
   const handleSignup = () => {
-    alert("Sign up functionality not implemented.");
     navigate("/signup");
   };
 
@@ -60,17 +59,17 @@ const Login = () => {
           <div className="inp">
             <img src={User_icon} alt="" />
             <input
-            className="log"
+              className="log"
               type="text"
               placeholder="UserID"
-              value={userId}
+              value={username}
               onChange={(e) => setUserId(e.target.value)}
             />
           </div>
           <div className="inp">
             <img src={password_icon} alt="" />
             <input
-            className="log"
+              className="log"
               type="password"
               placeholder="Password"
               value={password}
