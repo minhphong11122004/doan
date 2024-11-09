@@ -160,4 +160,3 @@ function ThanhToan() {
 }
 
 export default ThanhToan;
-  
