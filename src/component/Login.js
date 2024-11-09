@@ -22,7 +22,7 @@ const Login = () => {
       );
 
       if (user) {
-        alert("Login successful!");
+        alert("đăng nhập thành công");
         localStorage.setItem("isLoggedIn", true);
         localStorage.setItem("username", username);
         navigate("/");

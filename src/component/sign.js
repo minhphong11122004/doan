@@ -8,14 +8,14 @@ import password_icon from "../Assets/password.png";
 
 function Signup() {
   const navigate = useNavigate(); // Khởi tạo useNavigate
-  const [userid, setUserid] = useState("");
+  const [username, setUserid] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState("");
   const [error, setError] = useState("");
 
   const handleInput = (event) => {
     const { name, value } = event.target;
-    if (name === "userid") {
+    if (name === "username") {
       setUserid(value);
     } else if (name === "password") {
       setPassword(value);
@@ -24,8 +24,8 @@ function Signup() {
 
   const submit = async (event) => {
     event.preventDefault();
-    if (!userid || !password) {
-      setError("All fields are required");
+    if (!username || !password) {
+      setError("vui lòng điền đầy đủ thông tin");
       setMsg("");
     } else {
       setError("");
@@ -33,9 +33,9 @@ function Signup() {
       try {
         // Gửi yêu cầu đăng ký tới API
         const response = await axios.post(
-          "https://localhost:7256/api/Account",
+          "https://localhost:7256/api/Users/register",
           {
-            userid: userid,
+            username: username,
             password: password,
           }
         );
@@ -43,9 +43,9 @@ function Signup() {
         console.log("Response:", response.data); // In ra phản hồi từ API
 
         // Kiểm tra phản hồi từ API
-        if (response.status === 200) {
+        if (response.status === 201) {
           // Kiểm tra mã trạng thái HTTP
-          setMsg(`${userid}: Signup Successfully!`);
+          setMsg(`${username}: đăng ký thành công`);
           setUserid("");
           setPassword("");
 
@@ -55,13 +55,13 @@ function Signup() {
             navigate("/login"); // Chuyển hướng về trang đăng nhập
           }, 2000);
         } else {
-          setError("Signup failed. Please try again."); // Nếu mã trạng thái không phải 200
+          setError("lỗi thiếu thông tin"); // Nếu mã trạng thái không phải 200
         }
       } catch (error) {
         if (error.response && error.response.status === 409) {
-          setError("User ID already exists. Please choose another.");
+          setError("lỗi 500");
         } else {
-          setError("Error signing up. Please try again.");
+          setError("tên đã được sử dụng vui lòng nhập tên khác");
         }
         console.error("Signup error:", error);
       }
@@ -78,22 +78,22 @@ function Signup() {
 
         <div className="inputs">
           <div className="inp">
-          <img src={User_icon} alt="" />
+            <img src={User_icon} alt="" />
             <input
               className="log"
               type="text"
-              placeholder="User ID"
-              name="userid"
-              value={userid}
+              placeholder="Tên đăng nhập"
+              name="username"
+              value={username}
               onChange={handleInput}
             />
           </div>
           <div className="inp">
-          <img src={password_icon} alt="" />
+            <img src={password_icon} alt="" />
             <input
               className="log"
               type="password"
-              placeholder="Password"
+              placeholder="Mật khẩu"
               name="password"
               value={password}
               onChange={handleInput}
