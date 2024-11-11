@@ -214,3 +214,23 @@ tbody tr:nth-child(even) {
     color: #333;
     margin-bottom: 20px;
 }
+.password-container {
+    position: relative;
+  }
+  
+  .password-container input {
+    width: 100%;
+    padding-right: 30px; /* Tạo khoảng trống cho nút "Hiện/Ẩn" */
+  }
+  
+  .toggle-password-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #007bff;
+  }

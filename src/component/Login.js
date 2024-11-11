@@ -9,7 +9,8 @@ import password_icon from "../Assets/password.png";
 const Login = () => {
   const navigate = useNavigate();
   const [action, setAction] = useState("Login");
-  const [username, setUserId] = useState("");
+
+  const [username, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
 
@@ -25,6 +26,7 @@ const Login = () => {
         alert("đăng nhập thành công");
         localStorage.setItem("isLoggedIn", true);
         localStorage.setItem("username", username);
+        localStorage.setItem("userid", user.userId);
         navigate("/");
         window.location.reload();
       } else {
@@ -63,7 +65,7 @@ const Login = () => {
               type="text"
               placeholder="UserID"
               value={username}
-              onChange={(e) => setUserId(e.target.value)}
+              onChange={(e) => setUserName(e.target.value)}
             />
           </div>
           <div className="inp">

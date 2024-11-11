@@ -108,3 +108,17 @@
 .product-image:hover .xem-them {
     opacity: 1; /* Show button on hover */
 }
+#Show {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Khi nút "Show" được hiển thị, tạo hiệu ứng từ từ */
+#Show:hover {
+    background-color: #0069d9;
+    color: white;
+    transform: translateY(-5px);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+    

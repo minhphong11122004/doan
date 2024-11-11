@@ -4,17 +4,21 @@ import { useState, useEffect } from "react";
 
 function Navbar({ cartCount }) {
   const navigate = useNavigate();
-  const [username, setUserId] = useState(localStorage.getItem("username"));
+  const [username, setUserName] = useState(localStorage.getItem("username"));
+  const [userId, setUserId] = useState(localStorage.getItem("userid"));
 
   useEffect(() => {
-    const storedUserId = localStorage.getItem("username");
+    const storedUserName = localStorage.getItem("username");
+    const storedUserId = localStorage.getItem("userid");
+    setUserName(storedUserName);
     setUserId(storedUserId);
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("username");
-    setUserId(null);
+    localStorage.removeItem("userid");
+    setUserName(null);
     navigate("/");
     window.location.reload();
   };
