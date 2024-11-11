@@ -6,11 +6,12 @@ function Home() {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [showModal, setShowModal] = useState(false);
     const [currentProduct, setCurrentProduct] = useState(null);
-    const [quantity, setQuantity] = useState(1); // Khởi tạo state số lượng
+    const [quantity, setQuantity] = useState(1);
+    const [cartItems, setCartItems] = useState([]); // Initialize cart items state
 
     const showMore = () => {
         hiddenItemsRef.current.forEach(item => {
-            item.classList.remove('hidden');
+            if (item) item.classList.remove('hidden');
         });
         document.getElementById('Show').style.display = 'none';
     };
@@ -26,7 +27,7 @@ function Home() {
     const handleShowModal = (product) => {
         setCurrentProduct(product);
         setShowModal(true);
-        setQuantity(1); // Reset số lượng mỗi khi mở modal mới
+        setQuantity(1); // Reset quantity when opening a new product modal
     };
 
     const handleCloseModal = () => {
@@ -52,6 +53,20 @@ function Home() {
         { id: 7, name: 'Vòng tay bạc 7', img: 'https://i.ebayimg.com/images/g/HDEAAOSwArFc9qBa/s-l400.jpg', price: '2.500.000', description: 'Vòng tay bạc chất liệu cao cấp' },
         { id: 8, name: 'Vòng tay bạc 8', img: 'https://i.ebayimg.com/images/g/HDEAAOSwArFc9qBa/s-l400.jpg', price: '2.500.000', description: 'Vòng tay bạc chất liệu cao cấp' },
     ];
+
+    const handleAddToCart = (product) => {
+        setCartItems(prevItems => {
+            const existingItem = prevItems.find(item => item.id === product.id);
+            if (existingItem) {
+                return prevItems.map(item =>
+                    item.id === product.id ? { ...item, quantity: item.quantity + quantity } : item
+                );
+            } else {
+                return [...prevItems, { ...product, quantity }];
+            }
+        });
+        setShowModal(false); // Close modal after adding to cart
+    };
 
     return (
         <div>
@@ -121,7 +136,7 @@ function Home() {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Đóng</button>
-                                <button type="button" className="btn btn-primary">Mua Ngay</button>
+                                <button type="button" className="btn btn-primary" onClick={() => handleAddToCart(currentProduct)}>Mua Ngay</button>
                             </div>
                         </div>
                     </div>
