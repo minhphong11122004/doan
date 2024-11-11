@@ -1,6 +1,7 @@
 import "../css/Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import logo_icon from "../Assets/logo.png";
 
 function Navbar({ cartCount }) {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ function Navbar({ cartCount }) {
     <nav className="navbar">
       <div className="navbar-brand">
         <Link to="/" className="brand-logo">
-          Logo
+        <img src={logo_icon} alt="" />
         </Link>
       </div>
       <div className="navbar-links">

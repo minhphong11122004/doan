@@ -72,7 +72,7 @@ function Product({ cartItems, setCartItems }) { // Nhận cartItems và setCartI
                                 />
                                 <div className="button-container1">
                                 <button className="btn btn-hover-primary xem-them" 
-                                         onClick={handleShowModal}>Xem Thêm
+                                        onClick={handleShowModal}>Xem Thêm
                                 </button>
                                 <button 
                                     className="btn btn-hover-orange buy-now" 

@@ -108,3 +108,18 @@
 .product-image:hover .xem-them {
     opacity: 1; /* Show button on hover */
 }
+.product-description{
+    font-size: 16px;
+    margin-top: 20px;
+    margin-bottom: 20px;    
+    height: 3vh;
+}
+.product-price {
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 20px;    
+    height: 3vh;
+}
+.product-info{
+    margin-top: 150px;
+}
