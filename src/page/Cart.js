@@ -45,7 +45,7 @@ function Cart({ cartItems, setCartItems }) {
   };
 
   const total = cartItems.reduce((acc, item) => {
-    const price = parseFloat(item.gia) || 0; // Thay đổi từ price sang gia
+    const price = parseFloat(item.giaFormatted) || 0; // Thay đổi từ price sang gia
     const quantity = parseInt(item.quantity, 10) || 0;
     return acc + price * quantity;
   }, 0);
@@ -83,7 +83,7 @@ function Cart({ cartItems, setCartItems }) {
                         />
                       </td>
                       <td>{item.moTa}</td>
-                      <td>${parseFloat(item.gia).toFixed(2)}</td>
+                      <td>{parseFloat(item.giaFormatted).toFixed(2)}</td>
                       <td>
                         <div className="qty-box">
                           <button onClick={() => handleDecrease(index)}>
@@ -108,7 +108,7 @@ function Cart({ cartItems, setCartItems }) {
                 </tbody>
               </table>
               <h3 className="total-price text-right">
-                Tổng: ${total.toFixed(2)}
+                Tổng: {total.toFixed(2)}
               </h3>
               <div className="left-side-button">
                 <Link to="/thanhtoan">

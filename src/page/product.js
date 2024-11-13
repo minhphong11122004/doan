@@ -7,6 +7,7 @@ function Product({ cartItems, setCartItems }) {
   const hiddenItemsRef = useRef([]); // Tham chiếu tới các sản phẩm ẩn
   const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null); // Lưu thông tin sản phẩm đã chọn trong modal
   const [quantity, setQuantity] = useState(1);
 
   // Fetch data từ API
@@ -15,6 +16,7 @@ function Product({ cartItems, setCartItems }) {
       try {
         const response = await axios.get("https://localhost:7256/api/Sanpham");
         setProducts(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -25,7 +27,6 @@ function Product({ cartItems, setCartItems }) {
 
   // Hàm hiển thị các sản phẩm bị ẩn
   const showMore = () => {
-    // Khi nhấn "Show More", bỏ class 'hidden' và thêm hiệu ứng fade-in
     hiddenItemsRef.current.forEach((item) => {
       if (item) {
         item.classList.remove("hidden");
@@ -35,7 +36,11 @@ function Product({ cartItems, setCartItems }) {
     document.getElementById("Show").style.display = "none"; // Ẩn nút "Show More"
   };
 
-  const handleShowModal = () => setShowModal(true);
+  const handleShowModal = (product) => {
+    setSelectedProduct(product); // Set thông tin sản phẩm khi mở modal
+    setShowModal(true);
+  };
+
   const handleCloseModal = () => setShowModal(false);
   const handleQuantityChange = (e) => {
     const value = Math.max(1, parseInt(e.target.value) || 1); // Đảm bảo số lượng >= 1
@@ -73,16 +78,14 @@ function Product({ cartItems, setCartItems }) {
               <div className="product-image">
                 <img
                   className="card-img-top"
-                  src={
-                    product.imageUrl ||
-                    "https://i.ebayimg.com/images/g/HDEAAOSwArFc9qBa/s-l400.jpg"
-                  }
+                  // Dùng thuộc tính Hinh từ API
+                  src={product.hinh}
                   alt={product.productName}
                 />
                 <div className="button-container1">
                   <button
                     className="btn btn-hover-primary xem-them"
-                    onClick={handleShowModal}
+                    onClick={() => handleShowModal(product)} // Mở modal khi nhấn "Xem Thêm"
                   >
                     Xem Thêm
                   </button>
@@ -112,7 +115,7 @@ function Product({ cartItems, setCartItems }) {
       </div>
 
       {/* Modal (Xem Thêm sản phẩm) */}
-      {showModal && (
+      {showModal && selectedProduct && (
         <div
           className="modal fade show"
           style={{ display: "block" }}
@@ -122,7 +125,7 @@ function Product({ cartItems, setCartItems }) {
           <div className="modal-dialog modal-lg">
             <div className="modal-content">
               <div className="modal-header">
-                <h5 className="modal-title">Vòng tay bạc</h5>
+                <h5 className="modal-title">{selectedProduct.productName}</h5>
                 <button
                   type="button"
                   className="btn-close"
@@ -136,27 +139,31 @@ function Product({ cartItems, setCartItems }) {
                   data-bs-ride="carousel"
                 >
                   <div className="carousel-inner">
-                    <div className="carousel-item active">
-                      <img
-                        src="https://i.ebayimg.com/images/g/HDEAAOSwArFc9qBa/s-l400.jpg"
-                        className="d-block w-100 img-thumbnail"
-                        alt="Product Image 1"
-                      />
-                    </div>
-                    <div className="carousel-item">
-                      <img
-                        src="https://i.ebayimg.com/images/g/CUoAAOSwALNm2eR0/s-l960.webp"
-                        className="d-block w-100 img-thumbnail"
-                        alt="Product Image 2"
-                      />
-                    </div>
-                    <div className="carousel-item">
-                      <img
-                        src="https://i.ebayimg.com/images/g/V0cAAOSwWpBm2eRz/s-l1600.webp"
-                        className="d-block w-100 img-thumbnail"
-                        alt="Product Image 3"
-                      />
-                    </div>
+                    {/* Duyệt qua các hình ảnh trong mảng Hinh */}
+                    {selectedProduct.Hinh && selectedProduct.Hinh.length > 0 ? (
+                      selectedProduct.Hinh.map((image, index) => (
+                        <div
+                          key={index}
+                          className={`carousel-item ${
+                            index === 0 ? "active" : ""
+                          }`}
+                        >
+                          <img
+                            src={image}
+                            className="d-block w-100 img-thumbnail"
+                            alt={`Product Image ${index + 1}`}
+                          />
+                        </div>
+                      ))
+                    ) : (
+                      <div className="carousel-item active">
+                        <img
+                          src="https://i.ebayimg.com/images/g/HDEAAOSwArFc9qBa/s-l400.jpg"
+                          className="d-block w-100 img-thumbnail"
+                          alt="Default Product Image"
+                        />
+                      </div>
+                    )}
                   </div>
                   <button
                     className="carousel-control-prev"
@@ -183,11 +190,8 @@ function Product({ cartItems, setCartItems }) {
                     <span className="visually-hidden">Next</span>
                   </button>
                 </div>
-                <p className="product-description">
-                  Vòng tay bạc chất liệu cao cấp, thiết kế tinh xảo, phù hợp làm
-                  quà tặng.
-                </p>
-                <p className="product-price">Giá: 500,000₫</p>
+                <p className="product-description">{selectedProduct.moTa}</p>
+                <p className="product-price">Giá: {selectedProduct.gia}₫</p>
                 <div className="quantity-control">
                   <label htmlFor="quantity" className="form-label">
                     Số lượng:

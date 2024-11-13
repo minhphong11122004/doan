@@ -10,6 +10,7 @@
 /* Container styling */
 .container1 {
     width: 600px;
+    height: 100vh;
     background-color: #fff;
     padding: 40px 32px;
     border-radius: 20px;
