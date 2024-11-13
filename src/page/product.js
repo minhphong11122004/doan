@@ -36,12 +36,33 @@ function Product({ cartItems, setCartItems }) {
     document.getElementById("Show").style.display = "none"; // Ẩn nút "Show More"
   };
 
-  const handleShowModal = (product) => {
+  const handleShowModal = async (product) => {
     setSelectedProduct(product); // Set thông tin sản phẩm khi mở modal
     setShowModal(true);
+    // Lưu productId vào localStorage khi mở modal
+    localStorage.setItem("productId", product.productId);
+
+    // Gọi API để lấy chi tiết sản phẩm
+    try {
+      const storedProductId = localStorage.getItem("productId");
+      if (storedProductId) {
+        const response = await axios.get(
+          `https://localhost:7256/api/Sanpham/${storedProductId}`
+        );
+        setSelectedProduct(response.data); // Cập nhật thông tin sản phẩm vào modal
+        console.log(response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching product details", error);
+    }
   };
 
-  const handleCloseModal = () => setShowModal(false);
+  const handleCloseModal = () => {
+    setShowModal(false);
+    // Xóa productId khỏi localStorage khi đóng modal
+    localStorage.removeItem("productId");
+  };
+
   const handleQuantityChange = (e) => {
     const value = Math.max(1, parseInt(e.target.value) || 1); // Đảm bảo số lượng >= 1
     setQuantity(value);
@@ -78,7 +99,6 @@ function Product({ cartItems, setCartItems }) {
               <div className="product-image">
                 <img
                   className="card-img-top"
-                  // Dùng thuộc tính Hinh từ API
                   src={product.hinh}
                   alt={product.productName}
                 />
@@ -100,7 +120,7 @@ function Product({ cartItems, setCartItems }) {
               <div className="card-body">
                 <h5 className="card-title">{product.productName}</h5>
                 <p className="card-text">{product.moTa}</p>
-                <p className="card-text">{product.gia} VND</p>
+                <p className="card-text">{product.giaFormatted} VND</p>
               </div>
             </div>
           </div>
@@ -139,26 +159,28 @@ function Product({ cartItems, setCartItems }) {
                   data-bs-ride="carousel"
                 >
                   <div className="carousel-inner">
-                    {/* Duyệt qua các hình ảnh trong mảng Hinh */}
-                    {selectedProduct.Hinh && selectedProduct.Hinh.length > 0 ? (
-                      selectedProduct.Hinh.map((image, index) => (
-                        <div
-                          key={index}
-                          className={`carousel-item ${
-                            index === 0 ? "active" : ""
-                          }`}
-                        >
-                          <img
-                            src={image}
-                            className="d-block w-100 img-thumbnail"
-                            alt={`Product Image ${index + 1}`}
-                          />
-                        </div>
-                      ))
+                    {selectedProduct?.productDetails?.[0]?.hinhAnh &&
+                    selectedProduct.productDetails[0].hinhAnh.length > 0 ? (
+                      JSON.parse(selectedProduct.productDetails[0].hinhAnh).map(
+                        (image, index) => (
+                          <div
+                            key={index}
+                            className={`carousel-item ${
+                              index === 0 ? "active" : ""
+                            }`}
+                          >
+                            <img
+                              src={image}
+                              className="d-block w-100 img-thumbnail"
+                              alt={`Product Image ${index + 1}`}
+                            />
+                          </div>
+                        )
+                      )
                     ) : (
                       <div className="carousel-item active">
                         <img
-                          src="https://i.ebayimg.com/images/g/HDEAAOSwArFc9qBa/s-l400.jpg"
+                          src={selectedProduct.hinhAnh} // Lấy ảnh từ thuộc tính 'hinh' trong API nếu không có 'hinhAnh'
                           className="d-block w-100 img-thumbnail"
                           alt="Default Product Image"
                         />
@@ -190,8 +212,21 @@ function Product({ cartItems, setCartItems }) {
                     <span className="visually-hidden">Next</span>
                   </button>
                 </div>
-                <p className="product-description">{selectedProduct.moTa}</p>
-                <p className="product-price">Giá: {selectedProduct.gia}₫</p>
+                <p className="product-description">
+                  {selectedProduct.productDetails?.[0]?.processor ||
+                    "Mô tả không có"}
+                </p>
+                <p className="product-color">
+                  Màu sắc:{" "}
+                  {selectedProduct.productDetails?.[0]?.color || "Chưa có"}
+                </p>
+                <p className="product-size">
+                  Kích thước:{" "}
+                  {selectedProduct.productDetails?.[0]?.size || "Chưa có"}
+                </p>
+                <p className="product-price">
+                  Giá: {selectedProduct.giaFormatted}₫
+                </p>
                 <div className="quantity-control">
                   <label htmlFor="quantity" className="form-label">
                     Số lượng:
@@ -214,8 +249,12 @@ function Product({ cartItems, setCartItems }) {
                 >
                   Đóng
                 </button>
-                <button type="button" className="btn btn-primary">
-                  Mua Ngay
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={() => handleAddToCart(selectedProduct)}
+                >
+                  Thêm vào giỏ hàng
                 </button>
               </div>
             </div>
