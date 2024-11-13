@@ -19,41 +19,84 @@ function ThanhToan() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [email, setEmail] = useState(""); // Thêm email
   const [total, setTotal] = useState(0);
-  const [modalOpen, setModalOpen] = useState(false); // State to control modal visibility
-  const [paymentMethod, setPaymentMethod] = useState(""); // To track selected payment method
+  const [modalOpen, setModalOpen] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("");
 
-  const orderItems = [
-    { name: "Sản phẩm A", price: 50000 },
-    { name: "Sản phẩm B", price: 75000 },
-    { name: "Sản phẩm C", price: 100000 },
-  ];
+  const [cartItems, setCartItems] = useState(
+    JSON.parse(localStorage.getItem("cartItems")) || []
+  );
 
   useEffect(() => {
-    const totalAmount = orderItems.reduce((acc, item) => acc + item.price, 0);
+    const totalAmount = cartItems.reduce(
+      (acc, item) => acc + item.giaFormatted * item.quantity,
+      0
+    );
     setTotal(totalAmount);
-  }, []);
+  }, [cartItems]);
 
   const handleOrder = () => {
-    if (!name || !phone || !address) {
+    if (!name || !phone || !address || !email) {
       alert("Vui lòng điền đầy đủ thông tin.");
       return;
     }
-    // Open modal after order details are valid
+
+    // Tạo dữ liệu đơn hàng với các thông tin cần thiết
+    const orderData = {
+      OrderId: Math.floor(Math.random() * 1000000), // Mã đơn hàng ngẫu nhiên
+      CustomerName: name,
+      ProductName: cartItems.map((item) => item.productName).join(", "), // Danh sách tên sản phẩm
+      NgayMua: new Date(),
+      SoLuong: cartItems.reduce((acc, item) => acc + item.quantity, 0),
+      DiaChi: address,
+      Phone: phone,
+      Email: email,
+      TongTien: total,
+    };
+
+    console.log("Thông tin đơn hàng:", orderData); // Kiểm tra dữ liệu đơn hàng trong console
+
+    // Mở modal khi thông tin đơn hàng hợp lệ
     setModalOpen(true);
   };
 
   const handleCloseModal = () => {
-    setModalOpen(false); // Close the modal when user clicks on "Cancel"
-    setPaymentMethod(""); // Reset payment method
+    setModalOpen(false);
+    setPaymentMethod("");
   };
 
   const handlePaymentMethod = (method) => {
-    setPaymentMethod(method); // Set the selected payment method
+    setPaymentMethod(method);
+  };
+
+  const handleDecrease = (index) => {
+    const updatedCart = [...cartItems];
+    if (updatedCart[index].quantity > 1) {
+      updatedCart[index].quantity -= 1;
+    }
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    setCartItems(updatedCart);
+  };
+
+  const handleIncrease = (index) => {
+    const updatedCart = [...cartItems];
+    updatedCart[index].quantity += 1;
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    setCartItems(updatedCart);
+  };
+
+  const handleRemove = (index) => {
+    const updatedCart = cartItems.filter((_, i) => i !== index);
+    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+    setCartItems(updatedCart);
   };
 
   return (
-    <Container className="my-5 p-4 border rounded" style={{ maxWidth: "500px" }}>
+    <Container
+      className="my-5 p-4 border rounded"
+      style={{ maxWidth: "1000px" }}
+    >
       <h2 className="mb-4">Nhập thông tin để xác nhận thanh toán</h2>
       <Form>
         <FormGroup>
@@ -89,17 +132,62 @@ function ThanhToan() {
           />
         </FormGroup>
 
-        <h3>Đơn Hàng</h3>
-        {orderItems.map((item, index) => (
-          <Row key={index} className="d-flex justify-content-between my-2">
-            <Col>{item.name}</Col>
-            <Col className="text-right">{item.price} VND</Col>
-          </Row>
-        ))}
+        <FormGroup>
+          <Label for="email">Email:</Label>
+          <Input
+            type="email"
+            id="email"
+            placeholder="Nhập email của bạn"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </FormGroup>
 
-        <div className="text-right font-weight-bold mt-3">
-          Tổng tiền: <span>{total}</span> VND
-        </div>
+        <h3>Đơn Hàng</h3>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Tên sản phẩm</th>
+              <th>Hình ảnh</th>
+              <th>Giá</th>
+              <th>Số lượng</th>
+              <th>Xóa</th>
+            </tr>
+          </thead>
+          <tbody>
+            {cartItems.map((item, index) => (
+              <tr key={index}>
+                <td>{item.productName}</td>
+                <td>
+                  <img
+                    src={item.hinh}
+                    alt={item.productName}
+                    className="product-image1"
+                  />
+                </td>
+
+                <td>{item.giaFormatted}</td>
+                <td>
+                  <div className="qty-box">
+                    <button onClick={() => handleDecrease(index)}>-</button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => handleIncrease(index)}>+</button>
+                  </div>
+                </td>
+                <td>
+                  <button
+                    onClick={() => handleRemove(index)}
+                    className="remove-button"
+                  >
+                    Xóa
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <h3 className="total-price text-right">Tổng: {} VND</h3>
 
         <Button color="success" className="w-100 mt-4" onClick={handleOrder}>
           Xác nhận thanh toán
@@ -107,7 +195,9 @@ function ThanhToan() {
       </Form>
 
       <Modal isOpen={modalOpen} toggle={handleCloseModal}>
-        <ModalHeader toggle={handleCloseModal}>Chọn phương thức thanh toán</ModalHeader>
+        <ModalHeader toggle={handleCloseModal}>
+          Chọn phương thức thanh toán
+        </ModalHeader>
         <ModalBody>
           <table className="table table-striped">
             <thead>
@@ -126,32 +216,24 @@ function ThanhToan() {
               <tr>
                 <td>2</td>
                 <td>Thanh toán qua mã QR</td>
-                <td>Quý khách có thể quét mã QR để thanh toán qua ngân hàng của chúng tôi.</td>
+                <td>
+                  Quý khách có thể quét mã QR để thanh toán qua ngân hàng của
+                  chúng tôi.
+                </td>
               </tr>
             </tbody>
           </table>
 
-          {/* Display image when the method is selected */}
-          {paymentMethod === "Thanh toán qua mã QR" && (
-            <div className="text-center mt-4">
-              <img
-                src="https://via.placeholder.com/300x100.png?text=M%C3%A3+QR" // Thay đổi URL của hình ảnh ở đây
-                alt="Mã QR"
-                style={{ width: "300px", height: "10vh", objectFit: "cover" }}
-              />
-              <p className="mt-3">Số tiền: {total} VND</p>
-            </div>
-          )}
+          <Button color="primary" onClick={() => handlePaymentMethod("COD")}>
+            Thanh toán khi nhận hàng
+          </Button>
+          <Button color="secondary" onClick={() => handlePaymentMethod("QR")}>
+            Thanh toán qua QR
+          </Button>
         </ModalBody>
         <ModalFooter>
-          <Button color="primary" onClick={() => handlePaymentMethod("Thanh toán trực tiếp")}>
-            Thanh toán trực tiếp
-          </Button>
-          <Button color="secondary" onClick={() => handlePaymentMethod("Thanh toán qua mã QR")}>
-            Thanh toán qua mã QR
-          </Button>
-          <Button color="danger" onClick={handleCloseModal}>
-            Hủy
+          <Button color="secondary" onClick={handleCloseModal}>
+            Đóng
           </Button>
         </ModalFooter>
       </Modal>

@@ -143,7 +143,7 @@ function Product({ cartItems, setCartItems }) {
           role="dialog"
         >
           <div className="modal-dialog modal-lg">
-            <div className="modal-content">
+            <div className="modal-content m-8">
               <div className="modal-header">
                 <h5 className="modal-title">{selectedProduct.productName}</h5>
                 <button

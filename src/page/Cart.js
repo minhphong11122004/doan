@@ -5,8 +5,30 @@ import "../css/Cart.css";
 function Cart({ cartItems, setCartItems }) {
   const [notification, setNotification] = useState("");
 
-  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0); // Đếm số sản phẩm trong giỏ hàng
+  useEffect(() => {
+    const storedCartItems = localStorage.getItem("cartItems");
+    if (storedCartItems) {
+      try {
+        setCartItems(JSON.parse(storedCartItems)); // Khôi phục giỏ hàng từ localStorage
+      } catch (error) {
+        console.error("Lỗi khi parse dữ liệu giỏ hàng từ localStorage:", error);
+        // Xử lý lỗi nếu dữ liệu không hợp lệ, ví dụ: khôi phục giỏ hàng rỗng
+        setCartItems([]);
+      }
+    }
+  }, [setCartItems]);
 
+  // Lưu giỏ hàng vào localStorage khi cartItems thay đổi
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems)); // Lưu giỏ hàng vào localStorage
+    }
+  }, [cartItems]);
+
+  // Tính tổng số sản phẩm trong giỏ hàng
+  const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  // Tự động ẩn thông báo sau 3 giây
   useEffect(() => {
     if (notification) {
       const timer = setTimeout(() => setNotification(""), 3000);
@@ -14,6 +36,7 @@ function Cart({ cartItems, setCartItems }) {
     }
   }, [notification]);
 
+  // Hàm tăng số lượng sản phẩm trong giỏ hàng
   const handleIncrease = (index) => {
     const updatedItems = [...cartItems];
     updatedItems[index].quantity += 1;
@@ -23,6 +46,7 @@ function Cart({ cartItems, setCartItems }) {
     );
   };
 
+  // Hàm giảm số lượng sản phẩm trong giỏ hàng
   const handleDecrease = (index) => {
     const updatedItems = [...cartItems];
     if (updatedItems[index].quantity > 1) {
@@ -34,21 +58,37 @@ function Cart({ cartItems, setCartItems }) {
     }
   };
 
+  // Hàm xóa sản phẩm khỏi giỏ hàng
   const handleRemove = (index) => {
     if (
       window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?")
     ) {
-      const updatedItems = cartItems.filter((_, i) => i !== index);
-      setCartItems(updatedItems);
+      const updatedItems = cartItems.filter((_, i) => i !== index); // Xóa sản phẩm khỏi giỏ hàng
+      setCartItems(updatedItems); // Cập nhật lại giỏ hàng trong state
+      localStorage.setItem("cartItems", JSON.stringify(updatedItems)); // Lưu giỏ hàng mới vào localStorage
       setNotification(`Đã xóa sản phẩm khỏi giỏ hàng.`);
     }
   };
 
+  // Tính tổng giá trị giỏ hàng
+  // Tính tổng giá trị giỏ hàng
   const total = cartItems.reduce((acc, item) => {
-    const price = parseFloat(item.giaFormatted) || 0; // Thay đổi từ price sang gia
-    const quantity = parseInt(item.quantity, 10) || 0;
-    return acc + price * quantity;
+    // Loại bỏ dấu phân cách hàng nghìn (dấu chấm) và ký tự tiền tệ (nếu có)
+    const price = parseFloat(
+      item.giaFormatted.replace(/[^\d.-]/g, "").replace(/\./g, "")
+    );
+    const quantity = item.quantity;
+    if (!isNaN(price)) {
+      return acc + price * quantity;
+    }
+    return acc; // Tránh cộng dồn khi giá trị không phải là số hợp lệ
   }, 0);
+
+  // Định dạng tổng tiền theo kiểu tiền tệ (ví dụ: 1.964.000 VND)
+  const formattedTotal = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  }).format(total);
 
   return (
     <div className="body1">
@@ -77,13 +117,13 @@ function Cart({ cartItems, setCartItems }) {
                       <td>{item.productName}</td>
                       <td>
                         <img
-                          src={item.imageUrl}
+                          src={item.hinh}
                           alt={item.productName}
                           className="product-image1"
                         />
                       </td>
                       <td>{item.moTa}</td>
-                      <td>{parseFloat(item.giaFormatted).toFixed(2)}</td>
+                      <td>{item.giaFormatted}</td>
                       <td>
                         <div className="qty-box">
                           <button onClick={() => handleDecrease(index)}>
@@ -107,9 +147,7 @@ function Cart({ cartItems, setCartItems }) {
                   ))}
                 </tbody>
               </table>
-              <h3 className="total-price text-right">
-                Tổng: {total.toFixed(2)}
-              </h3>
+              <h3 className="total-price text-right">Tổng: {formattedTotal}</h3>
               <div className="left-side-button">
                 <Link to="/thanhtoan">
                   <button className="checkout-button">
