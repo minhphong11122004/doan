@@ -1,0 +1,236 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #fce3c5;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    max-width: 1550px;
+}
+
+
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .container {
+        width: 100%;
+        padding: 0 10px;
+    }
+}
+.custom-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 50px auto;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+}
+
+.custom-tab-container {
+    width: 250px; /* Giữ kích thước cố định cho tab */
+    padding-right: 20px;
+    border-right: 2px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Giữ cho tab không thay đổi chiều cao */
+    position: sticky;
+    top: 30px;
+    height: 100%; /* Giữ chiều cao cố định */
+}
+
+.custom-tab-button {
+    padding: 18px;
+    background-color: #f7f7f7;
+    margin: 10px 0;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Đảm bảo nút tab chiếm hết chiều ngang */
+}
+
+.custom-tab-button:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.05);
+}
+
+.custom-tab-button.active {
+    background: linear-gradient(135deg, #4CAF50, #80e27e);
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.custom-content-container {
+    width: 100%;
+    padding-left: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.custom-tab-content {
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.custom-tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+.custom-form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+input[type="text"]{
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #444;
+    transition: border 0.3s ease;
+
+}
+input[type="email"],
+input[type="password"]{
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+   
+    transition: border 0.3s ease;
+}
+input[type="file"] {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    font-size: 14px;
+    color: #444;
+    transition: border 0.3s ease;
+    background-color: #f9f9f9;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+small {
+    display: block;
+    color: #777;
+    margin-top: 5px;
+}
+
+.custom-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #4CAF50, #80e27e);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.custom-btn:hover {
+    background: linear-gradient(135deg, #45a049, #64b179);
+    transform: translateY(-3px);
+}
+
+.custom-table-container {
+    overflow-x: auto;
+    margin-top: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th,
+td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+    font-size: 14px;
+    color: #555;
+}
+
+th {
+    background-color: #f8f8f8;
+    font-weight: 600;
+}
+
+tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #fafafa;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.custom-form-container {
+    margin-bottom: 30px;
+}
+
+.custom-form-container h3 {
+    font-size: 22px;
+    color: #333;
+    margin-bottom: 20px;
+}
+.password-container {
+    position: relative;
+  }
+  
+  .password-container input {
+    width: 100%;
+    padding-right: 30px; /* Tạo khoảng trống cho nút "Hiện/Ẩn" */
+  }
+  
+  .toggle-password-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #007bff;
+  }

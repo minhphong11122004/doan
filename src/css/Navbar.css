@@ -1,0 +1,75 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgb(253, 227, 197)    ; /* Màu nền */
+    padding: 15px 30px;
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.navbar-brand img {
+    width: 90px;
+    height: 10vh;
+}
+
+.navbar-links {
+    display: flex;
+    gap: 20px;
+}
+
+.navbar-links a {
+    color: black;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.navbar-links a:hover {
+    color: #ffc107; /* Màu khi hover */
+}
+
+.navbar-search {
+    flex-grow: 1;
+    margin: 0 20px;
+    width: 500px;
+}
+
+.search-input {
+    width: 500px;
+    padding: 8px;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+}
+
+.navbar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-id {
+    margin-right: 10px;
+}
+
+.logout, .login {
+    background-color: #ffc107; /* Màu nút */
+    color: #333;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.logout:hover, .login:hover {
+    background-color: #ffca2b; /* Màu khi hover */
+}
+.cart-count {
+    color: red; /* Thay đổi màu sắc ở đây */
+    font-weight: bold; /* Thêm đậm nếu bạn muốn */
+}

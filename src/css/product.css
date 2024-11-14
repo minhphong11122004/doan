@@ -1,0 +1,175 @@
+.card-border {
+    background-color: white; /* Màu nền cho mỗi thẻ sản phẩm */
+    border-radius: 5px; /* Bo góc cho thẻ sản phẩm */
+    padding: 15px; /* Khoảng cách bên trong */
+    text-align: center; /* Canh giữa nội dung */
+    margin-bottom: 20px; /* Khoảng cách giữa các thẻ */
+    transition: transform 0.3s, box-shadow 0.3s; /* Hiệu ứng chuyển động */
+}
+.card-border:hover {
+    transform: translateY(-5px); /* Nâng thẻ lên khi hover */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Tăng độ đổ bóng khi hover */
+}
+
+.container-fluid {
+    background-color: #fce3c5;
+}
+
+.product-card {
+    position: relative;
+    overflow: hidden;
+    width: 350px;
+    height: 95% !important; 
+}
+
+.product-image {
+    position: relative; /* Giữ vị trí cho nút Mua Ngay */
+    overflow: hidden; /* Đảm bảo hình ảnh không bị tràn */
+
+}
+
+.product-image img {
+    width: 100%; /* Chiều rộng hình ảnh đầy đủ */
+    height: auto; /* Tự động điều chỉnh chiều cao */
+    border-radius: 5px; /* Bo góc cho hình ảnh */   
+}
+
+.product-image:hover img {
+    transform: scale(1.1);
+}
+
+.buy-now {
+    width: 100px;
+    position: absolute;
+    bottom: 10%; /* Đặt nút ở dưới cùng của hình ảnh */
+    left: 50%;
+    transform: translate(-50%, 0);
+    border: none;
+    background-color: black;
+    color: white;
+    font-size: 14px;
+    padding: 5px 10px;
+    opacity: 0;
+    transition: opacity 1s;
+    margin-left: 80px;
+
+}
+
+
+.btn-hover-orange {
+    font-size: 16px; /* Kích thước chữ nút */
+    color: orange !important;
+    border: solid 3px !important;
+    border-color: orange !important;
+}
+
+.btn-hover-orange:hover {
+    background-color: orange !important;
+    color: white !important;
+}
+.button-container1 {
+    position: absolute; /* Keep absolute positioning */
+    bottom: 10%; /* Vertical alignment */
+    right: 10%; /* Align buttons to the right */
+    display: flex; /* Arrange buttons in a row */
+    align-items: center; /* Center align buttons vertically */
+}
+
+.xem-them {
+    width: 100px;
+    border: solid 3px orange; /* Border styling */
+    background-color: orange; /* Background color */
+    color: white; /* Text color */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Cursor style */
+    padding: 5px 10px; /* Padding */
+    opacity: 0; /* Ensure opacity is 1 to make it visible */
+    transition: opacity 1s; /* Transition effect */
+    margin-left: 10px; /* Space between buttons */
+    margin-right: 150px;
+    margin-bottom: 5px;
+}
+.btn-hover-primary {
+    font-size: 16px; /* Kích thước chữ nút */
+    color: orange !important;
+    border: solid 3px !important;
+    border-color: orange !important;
+}
+
+.btn-hover-primary:hover {
+    background-color: orange !important;
+    color: white !important;
+}
+
+.product-image:hover .buy-now {
+    opacity: 1; /* Show button on hover */
+}
+
+.product-image:hover .xem-them {
+    opacity: 1; /* Show button on hover */
+}
+#Show {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Khi nút "Show" được hiển thị, tạo hiệu ứng từ từ */
+#Show:hover {
+    background-color: #0069d9;
+    color: white;
+    transform: translateY(-5px);
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+    
+.product-description{
+    font-size: 16px;
+    margin-top: 20px;
+    margin-bottom: 20px;    
+    height: 3vh;
+}
+.product-price {
+    font-size: 18px;
+    margin-top: 20px;
+    margin-bottom: 20px;    
+    height: 3vh;
+}
+.product-info{
+    margin-top: 150px;
+}
+
+.modal-body {
+    display: flex;
+  }
+  
+  .carousel {
+    position: relative;
+  }
+  
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 5%;
+  }
+  
+  .modal-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 20px;
+  }
+  .product-description {
+    font-size: 16px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    white-space: normal; /* Cho phép tự động xuống dòng */
+}
+
+.product-color,
+.product-size,
+.product-price,
+.quantity-control {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    clear: both; /* Đảm bảo các thẻ này không bị đè lên nhau */
+}
+
