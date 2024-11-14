@@ -52,6 +52,7 @@ function Product({ cartItems, setCartItems }) {
         );
         setSelectedProduct(response.data); // Cập nhật thông tin sản phẩm vào modal
         console.log(response.data);
+        console.log(response.productDetails.Size);
       }
     } catch (error) {
       console.error("Error fetching product details", error);
@@ -86,6 +87,7 @@ function Product({ cartItems, setCartItems }) {
     });
   };
   const [selectedSize, setSelectedSize] = useState(""); // Thêm khai báo selectedSize
+
   const handleSizeChange = (e) => {
     setSelectedSize(e.target.value);
   };
@@ -224,8 +226,8 @@ function Product({ cartItems, setCartItems }) {
                   </p>
                   <div className="product-size">
                     <label htmlFor="size-select">Kích thước:</label>
-                    {selectedProduct.productDetails?.[0]?.availableSizes &&
-                      selectedProduct.productDetails[0].availableSizes.length > 1 ? (
+                    {selectedProduct.productDetails?.[0]?.Size &&
+                      selectedProduct.productDetails[0].Size.length > 1 ? (
                       <select
                         id="size-select"
                         value={selectedSize}
