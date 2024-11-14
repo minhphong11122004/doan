@@ -99,6 +99,12 @@ button {
     padding: 15px 20px;
 }
 
+.modal-body{
+    display: flex;
+    gap: 50px;
+    
+}
+
 /* Modal Footer */
 .modal-footer {
     background-color: #f1f1f1;
@@ -185,8 +191,9 @@ button {
 .modal-body tr:nth-child(even) {
     background-color: #f9f9f9;
 }
-.modal-text{
-    display: block;
-    width: 300px;
+.mb-3 {
     text-align: left;
+}
+.table td{
+    text-align: center;
 }

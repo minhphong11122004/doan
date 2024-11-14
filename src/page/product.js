@@ -26,7 +26,28 @@ function Product({ cartItems, setCartItems }) {
     fetchData();
   }, []);
 
+
   // Hàm hiển thị các sản phẩm bị ẩn
+
+  // Lọc sản phẩm khi searchQuery thay đổi
+  useEffect(() => {
+    const lowerSearchTerm = removeAccents(searchQuery.toLowerCase()); // Loại bỏ dấu khi tìm kiếm
+    const filtered = products.filter((product) => {
+      // Kiểm tra tên sản phẩm và giá có chứa từ khóa hay không (loại bỏ dấu)
+      const productName = product.productName
+        ? removeAccents(product.productName.toLowerCase()) // Loại bỏ dấu khi so sánh
+        : "";
+      const priceMatches = product.giaFormatted
+        ? product.giaFormatted.toString().includes(lowerSearchTerm)
+        : false;
+
+      // Trả về true nếu tên sản phẩm hoặc giá khớp với từ khóa
+      return productName.includes(lowerSearchTerm) || priceMatches;
+    });
+
+    setFilteredProducts(filtered); // Cập nhật sản phẩm đã lọc
+  }, [searchQuery, products]); // Lọc lại khi searchQuery hoặc products thay đổi
+
   const showMore = () => {
     hiddenItemsRef.current.forEach((item) => {
       if (item) {
@@ -40,10 +61,8 @@ function Product({ cartItems, setCartItems }) {
   const handleShowModal = async (product) => {
     setSelectedProduct(product); // Set thông tin sản phẩm khi mở modal
     setShowModal(true);
-    // Lưu productId vào localStorage khi mở modal
     localStorage.setItem("productId", product.productId);
 
-    // Gọi API để lấy chi tiết sản phẩm
     try {
       const storedProductId = localStorage.getItem("productId");
       if (storedProductId) {

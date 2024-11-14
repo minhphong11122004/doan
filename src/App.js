@@ -41,6 +41,7 @@ function App() {
             element={
               <Home
                 handleAddToCart={handleAddToCart}
+                cartItems={cartItems}
                 setCartItems={setCartItems}
               />
             }

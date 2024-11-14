@@ -27,7 +27,7 @@ function Home() {
   const handleShowModal = (product) => {
     setCurrentProduct(product);
     setShowModal(true);
-    setQuantity(1); // Reset quantity when opening a new product modal
+    setQuantity(1);
   };  
 
   const handleCloseModal = () => {
