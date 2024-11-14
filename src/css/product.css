@@ -125,7 +125,7 @@
 .product-description{
     font-size: 16px;
     margin-top: 20px;
-    margin-bottom: 20px;    
+  
     height: 3vh;
 }
 .product-price {
@@ -137,6 +137,16 @@
 .product-info{
     margin-top: 150px;
 }
-.modal-content {
-    width: 700px;
+.product-color{
+    margin-bottom: 0px;
+    margin-top: 5px;
 }
+.modal-content{
+    height: 100vh;
+}
+.navbar-search {
+    flex-grow: 1;
+    margin: 0 20px;
+    width: 500px;
+}
+

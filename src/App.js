@@ -10,7 +10,6 @@ import Cart from "./page/Cart";
 import ThanhToan from "./page/ThanhToan";
 import Account from "./page/Account";
 
-
 function App() {
   const [cartItems, setCartItems] = useState([]);
 

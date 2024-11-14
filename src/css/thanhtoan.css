@@ -101,7 +101,8 @@ button {
 
 .modal-body{
     display: flex;
-    gap: 50px
+    gap: 50px;
+    
 }
 /* Modal Footer */
 .modal-footer {
@@ -191,4 +192,7 @@ button {
 }
 .mb-3 {
     text-align: left;
+}
+.table td{
+    text-align: center;
 }

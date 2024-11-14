@@ -32,7 +32,7 @@ function Navbar({ cartCount }) {
     <nav className="navbar">
       <div className="navbar-brand">
         <Link to="/" className="brand-logo">
-        <img src={logo_icon} alt="" />
+          <img src={logo_icon} alt="" />
         </Link>
       </div>
       <div className="navbar-links">
@@ -45,9 +45,7 @@ function Navbar({ cartCount }) {
           </span>
         </Link>
       </div>
-      <div className="navbar-search">
-        <input type="text" className="search-input" placeholder="Tìm kiếm" />
-      </div>
+
       <div className="navbar-user">
         {username ? (
           <>

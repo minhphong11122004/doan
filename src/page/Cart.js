@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios"; // Đảm bảo bạn có axios để gọi API
 import "../css/Cart.css";
 
 function Cart({ cartItems, setCartItems }) {
   const [notification, setNotification] = useState("");
+  const [loading, setLoading] = useState(true); // Thêm state loading
+  const [updatedCartItems, setUpdatedCartItems] = useState([]);
 
+  // Lấy giỏ hàng từ localStorage khi trang tải
   useEffect(() => {
     const storedCartItems = localStorage.getItem("cartItems");
     if (storedCartItems) {
@@ -12,7 +16,6 @@ function Cart({ cartItems, setCartItems }) {
         setCartItems(JSON.parse(storedCartItems)); // Khôi phục giỏ hàng từ localStorage
       } catch (error) {
         console.error("Lỗi khi parse dữ liệu giỏ hàng từ localStorage:", error);
-        // Xử lý lỗi nếu dữ liệu không hợp lệ, ví dụ: khôi phục giỏ hàng rỗng
         setCartItems([]);
       }
     }
@@ -25,16 +28,61 @@ function Cart({ cartItems, setCartItems }) {
     }
   }, [cartItems]);
 
+  // Lấy thông tin chi tiết của sản phẩm từ API khi giỏ hàng được hiển thị
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      setLoading(true); // Bắt đầu tải
+      try {
+        const updatedItems = await Promise.all(
+          cartItems.map(async (item) => {
+            if (item.productId) {
+              try {
+                const response = await axios.get(
+                  `https://localhost:7256/api/Sanpham/${item.productId}` // Thay URL API của bạn ở đây
+                );
+                return {
+                  ...item,
+                  productDetails: response.data.productDetails || [], // Cập nhật productDetails
+                };
+              } catch (error) {
+                console.error("Lỗi khi lấy productDetails:", error);
+                return item;
+              }
+            }
+            return item;
+          })
+        );
+        setUpdatedCartItems(updatedItems); // Cập nhật lại giỏ hàng với productDetails
+      } catch (error) {
+        console.error("Lỗi khi cập nhật giỏ hàng:", error);
+      } finally {
+        setLoading(false); // Kết thúc tải
+      }
+    };
+
+    if (cartItems.length > 0) {
+      fetchProductDetails(); // Gọi API để lấy productDetails
+    } else {
+      setLoading(false);
+    }
+  }, [cartItems]);
+
   // Tính tổng số sản phẩm trong giỏ hàng
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-  // Tự động ẩn thông báo sau 3 giây
-  useEffect(() => {
-    if (notification) {
-      const timer = setTimeout(() => setNotification(""), 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [notification]);
+  // Hàm chọn size trong giỏ hàng
+  const handleSizeChange = (index, size) => {
+    const updatedItems = [...cartItems];
+    updatedItems[index].selectedSize = size; // Lưu kích cỡ đã chọn vào sản phẩm
+    setCartItems(updatedItems);
+
+    // Lưu giỏ hàng với thông tin kích cỡ vào localStorage
+    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+
+    setNotification(
+      `Đã chọn kích cỡ ${size} cho ${updatedItems[index].productName}.`
+    );
+  };
 
   // Hàm tăng số lượng sản phẩm trong giỏ hàng
   const handleIncrease = (index) => {
@@ -67,13 +115,12 @@ function Cart({ cartItems, setCartItems }) {
       setCartItems(updatedItems); // Cập nhật lại giỏ hàng trong state
       localStorage.setItem("cartItems", JSON.stringify(updatedItems)); // Lưu giỏ hàng mới vào localStorage
       setNotification(`Đã xóa sản phẩm khỏi giỏ hàng.`);
+      window.location.reload();
     }
   };
 
   // Tính tổng giá trị giỏ hàng
-  // Tính tổng giá trị giỏ hàng
-  const total = cartItems.reduce((acc, item) => {
-    // Loại bỏ dấu phân cách hàng nghìn (dấu chấm) và ký tự tiền tệ (nếu có)
+  const total = updatedCartItems.reduce((acc, item) => {
     const price = parseFloat(
       item.giaFormatted.replace(/[^\d.-]/g, "").replace(/\./g, "")
     );
@@ -96,7 +143,9 @@ function Cart({ cartItems, setCartItems }) {
         <div className="container">
           <h1 className="mb-5 text-center">Giỏ Hàng ({cartCount})</h1>
           {notification && <div className="notification">{notification}</div>}
-          {cartItems.length === 0 ? (
+          {loading ? (
+            <p>Đang tải giỏ hàng...</p> // Hiển thị khi đang tải
+          ) : updatedCartItems.length === 0 ? (
             <p className="text-center">Giỏ hàng của bạn đang trống.</p>
           ) : (
             <div>
@@ -108,43 +157,74 @@ function Cart({ cartItems, setCartItems }) {
                     <th>Mô tả</th>
                     <th>Giá</th>
                     <th>Số lượng</th>
+                    <th>Màu sắc</th>
+                    <th>Kích cỡ</th>
                     <th>Thao tác</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {cartItems.map((item, index) => (
-                    <tr key={index}>
-                      <td>{item.productName}</td>
-                      <td>
-                        <img
-                          src={item.hinh}
-                          alt={item.productName}
-                          className="product-image1"
-                        />
-                      </td>
-                      <td>{item.moTa}</td>
-                      <td>{item.giaFormatted}</td>
-                      <td>
-                        <div className="qty-box">
-                          <button onClick={() => handleDecrease(index)}>
-                            -
+                  {updatedCartItems.map((item, index) => {
+                    // Tách size từ chuỗi
+                    const sizes =
+                      item.productDetails && item.productDetails[0]?.size
+                        ? item.productDetails[0].size.split(", ") // Tách chuỗi thành mảng
+                        : [];
+
+                    return (
+                      <tr key={index}>
+                        <td>{item.productName}</td>
+                        <td>
+                          <img
+                            src={item.hinh}
+                            alt={item.productName}
+                            className="product-image1"
+                          />
+                        </td>
+                        <td>{item.moTa}</td>
+                        <td>{item.giaFormatted}</td>
+                        <td>
+                          <div className="qty-box">
+                            <button onClick={() => handleDecrease(index)}>
+                              -
+                            </button>
+                            <span>{item.quantity}</span>
+                            <button onClick={() => handleIncrease(index)}>
+                              +
+                            </button>
+                          </div>
+                        </td>
+                        <td>
+                          {item.productDetails && item.productDetails[0]
+                            ? item.productDetails[0].color
+                            : "Chưa có màu"}
+                        </td>
+                        <td>
+                          {/* Dropdown chọn size */}
+                          <select
+                            value={item.selectedSize || ""}
+                            onChange={(e) =>
+                              handleSizeChange(index, e.target.value)
+                            }
+                          >
+                            <option value="">Chọn kích cỡ</option>
+                            {sizes.map((size, sizeIndex) => (
+                              <option key={sizeIndex} value={size}>
+                                {size}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+                        <td>
+                          <button
+                            onClick={() => handleRemove(index)}
+                            className="remove-button"
+                          >
+                            Xóa
                           </button>
-                          <span>{item.quantity}</span>
-                          <button onClick={() => handleIncrease(index)}>
-                            +
-                          </button>
-                        </div>
-                      </td>
-                      <td>
-                        <button
-                          onClick={() => handleRemove(index)}
-                          className="remove-button"
-                        >
-                          Xóa
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
               <h3 className="total-price text-right">Tổng: {formattedTotal}</h3>

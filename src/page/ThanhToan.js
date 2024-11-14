@@ -6,8 +6,6 @@ import {
   Label,
   Input,
   Button,
-  Row,
-  Col,
   Modal,
   ModalHeader,
   ModalBody,
@@ -19,7 +17,7 @@ function ThanhToan() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [email, setEmail] = useState(""); // Thêm email
+  const [email, setEmail] = useState("");
   const [total, setTotal] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
@@ -28,11 +26,29 @@ function ThanhToan() {
     JSON.parse(localStorage.getItem("cartItems")) || []
   );
 
+  // Định dạng giá sản phẩm
+  const formatPrice = (price) => {
+    const priceString = typeof price === "string" ? price : price.toString();
+    const priceNumber =
+      parseFloat(priceString.replace(/[^\d.-]/g, "").replace(/\./g, "")) || 0;
+
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(priceNumber);
+  };
+
+  // Effect tính toán tổng tiền giỏ hàng
   useEffect(() => {
-    const totalAmount = cartItems.reduce(
-      (acc, item) => acc + item.giaFormatted * item.quantity,
-      0
-    );
+    const totalAmount = cartItems.reduce((acc, item) => {
+      const price =
+        parseFloat(
+          item.giaFormatted.replace(/[^\d.-]/g, "").replace(/\./g, "")
+        ) || 0;
+      const quantity = parseInt(item.quantity, 10) || 0;
+
+      return acc + price * quantity;
+    }, 0);
     setTotal(totalAmount);
   }, [cartItems]);
 
@@ -42,23 +58,28 @@ function ThanhToan() {
       return;
     }
 
-    // Tạo dữ liệu đơn hàng với các thông tin cần thiết
     const orderData = {
-      OrderId: Math.floor(Math.random() * 1000000), // Mã đơn hàng ngẫu nhiên
+      OrderId: Math.floor(Math.random() * 1000000),
       CustomerName: name,
-      ProductName: cartItems.map((item) => item.productName).join(", "), // Danh sách tên sản phẩm
+      ProductName: cartItems.map((item) => item.productName).join(", "),
       NgayMua: new Date(),
-      SoLuong: cartItems.reduce((acc, item) => acc + item.quantity, 0),
+      SoLuong: cartItems.reduce((acc, item) => acc + item.quantity, 1),
       DiaChi: address,
       Phone: phone,
       Email: email,
       TongTien: total,
+      // Lưu thông tin kích cỡ và số lượng
+      Details: cartItems.map((item) => ({
+        productName: item.productName,
+        size: item.selectedSize || "Chưa chọn kích cỡ", // Hiển thị kích cỡ nếu có
+        quantity: item.quantity,
+        price: item.giaFormatted,
+      })),
     };
 
-    console.log("Thông tin đơn hàng:", orderData); // Kiểm tra dữ liệu đơn hàng trong console
+    console.log("Thông tin đơn hàng:", orderData);
 
-    // Mở modal khi thông tin đơn hàng hợp lệ
-    setModalOpen(true);
+    setModalOpen(true); // Mở modal khi đơn hàng hợp lệ
   };
 
   const handleCloseModal = () => {
@@ -70,27 +91,12 @@ function ThanhToan() {
     setPaymentMethod(method);
   };
 
-  const handleDecrease = (index) => {
-    const updatedCart = [...cartItems];
-    if (updatedCart[index].quantity > 1) {
-      updatedCart[index].quantity -= 1;
+  // Effect lưu giỏ hàng vào localStorage khi có sự thay đổi
+  useEffect(() => {
+    if (cartItems.length > 0) {
+      localStorage.setItem("cartItems", JSON.stringify(cartItems)); // Chỉ lưu khi giỏ hàng có thay đổi
     }
-    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-    setCartItems(updatedCart);
-  };
-
-  const handleIncrease = (index) => {
-    const updatedCart = [...cartItems];
-    updatedCart[index].quantity += 1;
-    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-    setCartItems(updatedCart);
-  };
-
-  const handleRemove = (index) => {
-    const updatedCart = cartItems.filter((_, i) => i !== index);
-    localStorage.setItem("cartItems", JSON.stringify(updatedCart));
-    setCartItems(updatedCart);
-  };
+  }, [cartItems]);
 
   return (
     <Container
@@ -151,7 +157,7 @@ function ThanhToan() {
               <th>Hình ảnh</th>
               <th>Giá</th>
               <th>Số lượng</th>
-              <th>Xóa</th>
+              <th>Kích cỡ</th>
             </tr>
           </thead>
           <tbody>
@@ -165,29 +171,18 @@ function ThanhToan() {
                     className="product-image1"
                   />
                 </td>
-
-                <td>{item.giaFormatted}</td>
-                <td>
-                  <div className="qty-box">
-                    <button onClick={() => handleDecrease(index)}>-</button>
-                    <span>{item.quantity}</span>
-                    <button onClick={() => handleIncrease(index)}>+</button>
-                  </div>
-                </td>
-                <td>
-                  <button
-                    onClick={() => handleRemove(index)}
-                    className="remove-button"
-                  >
-                    Xóa
-                  </button>
-                </td>
+                <td>{formatPrice(item.giaFormatted)}</td>
+                <td>{item.quantity}</td>
+                <td>{item.selectedSize || "Chưa chọn kích cỡ"}</td>{" "}
+                {/* Hiển thị kích cỡ */}
               </tr>
             ))}
           </tbody>
         </table>
 
-        <h3 className="total-price text-right">Tổng: {} VND</h3>
+        <h3 className="total-price text-right">
+          Tổng: {isNaN(total) ? 0 : formatPrice(total)}
+        </h3>
 
         <Button color="success" className="w-100 mt-4" onClick={handleOrder}>
           Xác nhận thanh toán
