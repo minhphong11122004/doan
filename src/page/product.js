@@ -14,7 +14,6 @@ function Product({ cartItems, setCartItems }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         const response = await axios.get("https://localhost:7256/api/Sanpham");
         setProducts(response.data);
         console.log(response.data);
@@ -25,7 +24,6 @@ function Product({ cartItems, setCartItems }) {
 
     fetchData();
   }, []);
-
 
   // Hàm hiển thị các sản phẩm bị ẩn
 
@@ -115,9 +113,14 @@ function Product({ cartItems, setCartItems }) {
     <div className="container-fluid">
       <div className="row">
         <h1 className="mb-5">Bộ sưu tập</h1>
+        <div className="navbar-search">
+          <input type="text" className="search-input" placeholder="Tìm kiếm" />
+        </div>
+
         {products.map((product, index) => (
           <div
-            key={product.productId} className={`col-md-3 ${index >= 8 ? "hidden" : ""}`}
+            key={product.productId}
+            className={`col-md-3 ${index >= 8 ? "hidden" : ""}`}
             ref={(el) => index >= 8 && (hiddenItemsRef.current[index - 8] = el)} // Lưu các sản phẩm ẩn vào ref
           >
             <div className="card card-border product-card mb-4">
@@ -187,12 +190,14 @@ function Product({ cartItems, setCartItems }) {
                 >
                   <div className="carousel-inner">
                     {selectedProduct?.productDetails?.[0]?.hinhAnh &&
-                      selectedProduct.productDetails[0].hinhAnh.length > 0 ? (
+                    selectedProduct.productDetails[0].hinhAnh.length > 0 ? (
                       JSON.parse(selectedProduct.productDetails[0].hinhAnh).map(
                         (image, index) => (
                           <div
                             key={index}
-                            className={`carousel-item ${index === 0 ? "active" : ""}`}
+                            className={`carousel-item ${
+                              index === 0 ? "active" : ""
+                            }`}
                           >
                             <img
                               src={image}
@@ -218,7 +223,10 @@ function Product({ cartItems, setCartItems }) {
                     data-bs-target="#more-img"
                     data-bs-slide="prev"
                   >
-                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span
+                      className="carousel-control-prev-icon"
+                      aria-hidden="true"
+                    ></span>
                     <span className="visually-hidden">Previous</span>
                   </button>
                   <button
@@ -227,56 +235,70 @@ function Product({ cartItems, setCartItems }) {
                     data-bs-target="#more-img"
                     data-bs-slide="next"
                   >
-                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span
+                      className="carousel-control-next-icon"
+                      aria-hidden="true"
+                    ></span>
                     <span className="visually-hidden">Next</span>
                   </button>
                 </div>
 
-                <div className="modal-text" style={{ width: "50%", paddingLeft: "20px" }}>
-                  <p className="product-description"
+                <div
+                  className="modal-text"
+                  style={{ width: "50%", paddingLeft: "20px" }}
+                >
+                  <p
+                    className="product-description"
                     style={{
                       height: "20vh",
-                    }}>
+                    }}
+                  >
                     {selectedProduct.productDetails?.[0]?.processor ||
                       "VÒNG TAY ĐÁ THẠCH ANH HỒNG CÓ SAO TỰ NHIÊN VÒNG TAY ĐÁ THẠCH ANH HỒNG CÓ SAO TỰ NHIÊN VÒNG TAY ĐÁ THẠCH ANH HỒNG CÓ SAO TỰ NHIÊN"}
                   </p>
                   <p className="product-color">
-                    Màu sắc: {selectedProduct.productDetails?.[0]?.color || "Chưa có"}
+                    Màu sắc:{" "}
+                    {selectedProduct.productDetails?.[0]?.color || "Chưa có"}
                   </p>
                   <div className="product-size">
                     <label htmlFor="size-select">Kích thước:</label>
                     {selectedProduct.productDetails?.[0]?.Size &&
-                      selectedProduct.productDetails[0].Size.length > 1 ? (
+                    selectedProduct.productDetails[0].Size.length > 1 ? (
                       <select
                         id="size-select"
                         value={selectedSize}
                         onChange={handleSizeChange}
                         className="form-select"
                       >
-                        {selectedProduct.productDetails[0].availableSizes.map((size, index) => (
-                          <option key={index} value={size}>
-                            {size}
-                          </option>
-                        ))}
+                        {selectedProduct.productDetails[0].availableSizes.map(
+                          (size, index) => (
+                            <option key={index} value={size}>
+                              {size}
+                            </option>
+                          )
+                        )}
                       </select>
                     ) : (
-                      <span>{selectedProduct.productDetails?.[0]?.size || "Chưa có"}</span>
+                      <span>
+                        {selectedProduct.productDetails?.[0]?.size || "Chưa có"}
+                      </span>
                     )}
                   </div>
 
-                  <div className="quantity-control"
+                  <div
+                    className="quantity-control"
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
                       marginTop: "20px",
-                      textAlign: "center"
+                      textAlign: "center",
                     }}
                   >
                     <label htmlFor="quantity" className="form-label">
                       Số lượng:
                     </label>
                     <input
-                      style={{ width: "200px", }}
+                      style={{ width: "200px" }}
                       type="number"
                       id="quantity"
                       className="form-control"
@@ -285,7 +307,8 @@ function Product({ cartItems, setCartItems }) {
                       onChange={handleQuantityChange}
                     />
                   </div>
-                  <p className="product-price"
+                  <p
+                    className="product-price"
                     style={{
                       textAlign: "center",
                     }}
@@ -296,7 +319,8 @@ function Product({ cartItems, setCartItems }) {
               </div>
               <div className="modal-footer">
                 <button
-                  type="button" className="btn btn-secondary"
+                  type="button"
+                  className="btn btn-secondary"
                   onClick={handleCloseModal}
                 >
                   Đóng
