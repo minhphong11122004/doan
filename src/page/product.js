@@ -13,7 +13,7 @@ function removeAccents(str) {
   return str
     .split("")
     .map((char, index) => {
-      const accentIndex = accents.indexOf(char);
+     const accentIndex = accents.indexOf(char);
       return accentIndex !== -1 ? withoutAccents[accentIndex] : char;
     })
     .join("");
