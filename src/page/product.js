@@ -3,21 +3,38 @@ import axios from "axios";
 import "../css/Home.css";
 import "../css/product.css";
 
+// Hàm loại bỏ dấu tiếng Việt
+function removeAccents(str) {
+  const accents =
+    "àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ";
+  const withoutAccents =
+    "aaaaaaaaaaaaaaaaaeeeeeeeeeeiiiiiooooooooooooooouuuuuuuuuuuuuuyyyddaAAAAAAAAAAAAAAAAAEEEEEEEEEEEIIIIOOOOOOOOOOOOOOUUUUUUUUUUUUUUYYYYD";
+
+  return str
+    .split("")
+    .map((char, index) => {
+      const accentIndex = accents.indexOf(char);
+      return accentIndex !== -1 ? withoutAccents[accentIndex] : char;
+    })
+    .join("");
+}
+
 function Product({ cartItems, setCartItems }) {
   const hiddenItemsRef = useRef([]); // Tham chiếu tới các sản phẩm ẩn
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null); // Lưu thông tin sản phẩm đã chọn trong modal
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [searchQuery, setSearchQuery] = useState(""); // Tạo state cho từ khóa tìm kiếm
 
   // Fetch data từ API
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         const response = await axios.get("https://localhost:7256/api/Sanpham");
         setProducts(response.data);
-        console.log(response.data);
+        setFilteredProducts(response.data); // Cập nhật sản phẩm khi tải xong
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -25,9 +42,6 @@ function Product({ cartItems, setCartItems }) {
 
     fetchData();
   }, []);
-
-
-  // Hàm hiển thị các sản phẩm bị ẩn
 
   // Lọc sản phẩm khi searchQuery thay đổi
   useEffect(() => {
@@ -69,9 +83,7 @@ function Product({ cartItems, setCartItems }) {
         const response = await axios.get(
           `https://localhost:7256/api/Sanpham/${storedProductId}`
         );
-        setSelectedProduct(response.data); // Cập nhật thông tin sản phẩm vào modal
-        console.log(response.data);
-        console.log(response.productDetails.Size);
+        setSelectedProduct(response.data); // Cập nhật thông tin vào modal
       }
     } catch (error) {
       console.error("Error fetching product details", error);
@@ -80,12 +92,11 @@ function Product({ cartItems, setCartItems }) {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    // Xóa productId khỏi localStorage khi đóng modal
     localStorage.removeItem("productId");
   };
 
   const handleQuantityChange = (e) => {
-    const value = Math.max(1, parseInt(e.target.value) || 1); // Đảm bảo số lượng >= 1
+    const value = Math.max(1, parseInt(e.target.value) || 1);
     setQuantity(value);
   };
 
@@ -105,15 +116,18 @@ function Product({ cartItems, setCartItems }) {
       }
     });
   };
-  const [selectedSize, setSelectedSize] = useState(""); // Thêm khai báo selectedSize
-
-  const handleSizeChange = (e) => {
-    setSelectedSize(e.target.value);
-  };
 
   return (
     <div className="container-fluid">
       <div className="row">
+      <div className="navbar-search mb-4 col-12">
+          <input
+            className="search-input"
+            placeholder="Tìm kiếm sản phẩm theo tên hoặc giá"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)} // Cập nhật từ khóa khi người dùng nhập
+          />
+        </div>
         <h1 className="mb-5">Bộ sưu tập</h1>
         {products.map((product, index) => (
           <div
@@ -245,23 +259,7 @@ function Product({ cartItems, setCartItems }) {
                   </p>
                   <div className="product-size">
                     <label htmlFor="size-select">Kích thước:</label>
-                    {selectedProduct.productDetails?.[0]?.Size &&
-                      selectedProduct.productDetails[0].Size.length > 1 ? (
-                      <select
-                        id="size-select"
-                        value={selectedSize}
-                        onChange={handleSizeChange}
-                        className="form-select"
-                      >
-                        {selectedProduct.productDetails[0].availableSizes.map((size, index) => (
-                          <option key={index} value={size}>
-                            {size}
-                          </option>
-                        ))}
-                      </select>
-                    ) : (
-                      <span>{selectedProduct.productDetails?.[0]?.size || "Chưa có"}</span>
-                    )}
+                    <span></span>
                   </div>
 
                   <div className="quantity-control"

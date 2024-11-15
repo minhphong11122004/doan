@@ -46,10 +46,7 @@ function Navbar({ cartCount }) {
         </Link>
       </div>
 
-      <div className="navbar-search">
-        <input type="text" className="search-input" placeholder="Tìm kiếm" />
-      </div>
-
+      
 
       <div className="navbar-user">
         {username ? (
