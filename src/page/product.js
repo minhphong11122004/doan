@@ -3,12 +3,30 @@ import axios from "axios";
 import "../css/Home.css";
 import "../css/product.css";
 
+// Hàm loại bỏ dấu tiếng Việt
+function removeAccents(str) {
+  const accents =
+    "àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ";
+  const withoutAccents =
+    "aaaaaaaaaaaaaaaaaeeeeeeeeeeiiiiiooooooooooooooouuuuuuuuuuuuuuyyyddaAAAAAAAAAAAAAAAAAEEEEEEEEEEEIIIIOOOOOOOOOOOOOOUUUUUUUUUUUUUUYYYYD";
+
+  return str
+    .split("")
+    .map((char, index) => {
+      const accentIndex = accents.indexOf(char);
+      return accentIndex !== -1 ? withoutAccents[accentIndex] : char;
+    })
+    .join("");
+}
+
 function Product({ cartItems, setCartItems }) {
   const hiddenItemsRef = useRef([]); // Tham chiếu tới các sản phẩm ẩn
   const [products, setProducts] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState(null); // Lưu thông tin sản phẩm đã chọn trong modal
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch data từ API
   useEffect(() => {
@@ -16,35 +34,28 @@ function Product({ cartItems, setCartItems }) {
       try {
         const response = await axios.get("https://localhost:7256/api/Sanpham");
         setProducts(response.data);
-        console.log(response.data);
+        setFilteredProducts(response.data); // Cập nhật sản phẩm khi tải xong
       } catch (error) {
         console.error("Error fetching data", error);
       }
     };
-
     fetchData();
   }, []);
 
-  // Hàm hiển thị các sản phẩm bị ẩn
-
   // Lọc sản phẩm khi searchQuery thay đổi
   useEffect(() => {
-    const lowerSearchTerm = removeAccents(searchQuery.toLowerCase()); // Loại bỏ dấu khi tìm kiếm
+    const lowerSearchTerm = removeAccents(searchQuery.toLowerCase());
     const filtered = products.filter((product) => {
-      // Kiểm tra tên sản phẩm và giá có chứa từ khóa hay không (loại bỏ dấu)
       const productName = product.productName
-        ? removeAccents(product.productName.toLowerCase()) // Loại bỏ dấu khi so sánh
+        ? removeAccents(product.productName.toLowerCase())
         : "";
       const priceMatches = product.giaFormatted
         ? product.giaFormatted.toString().includes(lowerSearchTerm)
         : false;
-
-      // Trả về true nếu tên sản phẩm hoặc giá khớp với từ khóa
       return productName.includes(lowerSearchTerm) || priceMatches;
     });
-
     setFilteredProducts(filtered); // Cập nhật sản phẩm đã lọc
-  }, [searchQuery, products]); // Lọc lại khi searchQuery hoặc products thay đổi
+  }, [searchQuery, products]);
 
   const showMore = () => {
     hiddenItemsRef.current.forEach((item) => {
@@ -57,7 +68,7 @@ function Product({ cartItems, setCartItems }) {
   };
 
   const handleShowModal = async (product) => {
-    setSelectedProduct(product); // Set thông tin sản phẩm khi mở modal
+    setSelectedProduct(product);
     setShowModal(true);
     localStorage.setItem("productId", product.productId);
 
@@ -67,9 +78,7 @@ function Product({ cartItems, setCartItems }) {
         const response = await axios.get(
           `https://localhost:7256/api/Sanpham/${storedProductId}`
         );
-        setSelectedProduct(response.data); // Cập nhật thông tin sản phẩm vào modal
-        console.log(response.data);
-        console.log(response.productDetails.Size);
+        setSelectedProduct(response.data); // Cập nhật thông tin vào modal
       }
     } catch (error) {
       console.error("Error fetching product details", error);
@@ -78,12 +87,11 @@ function Product({ cartItems, setCartItems }) {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    // Xóa productId khỏi localStorage khi đóng modal
     localStorage.removeItem("productId");
   };
 
   const handleQuantityChange = (e) => {
-    const value = Math.max(1, parseInt(e.target.value) || 1); // Đảm bảo số lượng >= 1
+    const value = Math.max(1, parseInt(e.target.value) || 1);
     setQuantity(value);
   };
 
@@ -103,25 +111,24 @@ function Product({ cartItems, setCartItems }) {
       }
     });
   };
-  const [selectedSize, setSelectedSize] = useState(""); // Thêm khai báo selectedSize
-
-  const handleSizeChange = (e) => {
-    setSelectedSize(e.target.value);
-  };
 
   return (
     <div className="container-fluid">
       <div className="row">
-        <h1 className="mb-5">Bộ sưu tập</h1>
-        <div className="navbar-search">
-          <input type="text" className="search-input" placeholder="Tìm kiếm" />
+        <div className="navbar-search mb-4 col-12">
+          <input
+            className="search-input"
+            placeholder="Tìm kiếm sản phẩm theo tên hoặc giá"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
         </div>
-
-        {products.map((product, index) => (
+        <h1 className="mb-5">Bộ sưu tập</h1>
+        {filteredProducts.map((product, index) => (
           <div
             key={product.productId}
             className={`col-md-3 ${index >= 8 ? "hidden" : ""}`}
-            ref={(el) => index >= 8 && (hiddenItemsRef.current[index - 8] = el)} // Lưu các sản phẩm ẩn vào ref
+            ref={(el) => index >= 8 && (hiddenItemsRef.current[index - 8] = el)}
           >
             <div className="card card-border product-card mb-4">
               <div className="product-image">
@@ -133,7 +140,7 @@ function Product({ cartItems, setCartItems }) {
                 <div className="button-container1">
                   <button
                     className="btn btn-hover-primary xem-them"
-                    onClick={() => handleShowModal(product)} // Mở modal khi nhấn "Xem Thêm"
+                    onClick={() => handleShowModal(product)}
                   >
                     Xem Thêm
                   </button>
@@ -180,7 +187,6 @@ function Product({ cartItems, setCartItems }) {
                   onClick={handleCloseModal}
                 ></button>
               </div>
-              {/* Modal Body */}
               <div className="modal-body d-flex">
                 <div
                   id="more-img"
@@ -243,78 +249,41 @@ function Product({ cartItems, setCartItems }) {
                   </button>
                 </div>
 
-                <div
-                  className="modal-text"
-                  style={{ width: "50%", paddingLeft: "20px" }}
-                >
-                  <p
-                    className="product-description"
-                    style={{
-                      height: "20vh",
-                    }}
-                  >
-                    {selectedProduct.productDetails?.[0]?.processor ||
-                      "VÒNG TAY ĐÁ THẠCH ANH HỒNG CÓ SAO TỰ NHIÊN VÒNG TAY ĐÁ THẠCH ANH HỒNG CÓ SAO TỰ NHIÊN VÒNG TAY ĐÁ THẠCH ANH HỒNG CÓ SAO TỰ NHIÊN"}
-                  </p>
-                  <p className="product-color">
-                    Màu sắc:{" "}
-                    {selectedProduct.productDetails?.[0]?.color || "Chưa có"}
-                  </p>
-                  <div className="product-size">
-                    <label htmlFor="size-select">Kích thước:</label>
-                    {selectedProduct.productDetails?.[0]?.Size &&
-                    selectedProduct.productDetails[0].Size.length > 1 ? (
-                      <select
-                        id="size-select"
-                        value={selectedSize}
-                        onChange={handleSizeChange}
-                        className="form-select"
-                      >
-                        {selectedProduct.productDetails[0].availableSizes.map(
-                          (size, index) => (
-                            <option key={index} value={size}>
-                              {size}
-                            </option>
-                          )
-                        )}
-                      </select>
-                    ) : (
-                      <span>
-                        {selectedProduct.productDetails?.[0]?.size || "Chưa có"}
-                      </span>
-                    )}
-                  </div>
-
-                  <div
-                    className="quantity-control"
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginTop: "20px",
-                      textAlign: "center",
-                    }}
-                  >
-                    <label htmlFor="quantity" className="form-label">
-                      Số lượng:
-                    </label>
+                {/* Chi tiết sản phẩm */}
+                <div style={{ width: "50%", marginLeft: "20px" }}>
+                  <h5>{selectedProduct.productName}</h5>
+                  <p>{selectedProduct.moTa}</p>
+                  <p>{selectedProduct.giaFormatted} VND</p>
+                  <div className="quantity-container mt-3">
+                    <button
+                      className="quantity-btn"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    >
+                      -
+                    </button>
                     <input
-                      style={{ width: "200px" }}
                       type="number"
-                      id="quantity"
-                      className="form-control"
-                      min="1"
+                      className="quantity-input"
                       value={quantity}
                       onChange={handleQuantityChange}
+                      min="1"
                     />
+                    <button
+                      className="quantity-btn"
+                      onClick={() => setQuantity(quantity + 1)}
+                    >
+                      +
+                    </button>
                   </div>
-                  <p
-                    className="product-price"
-                    style={{
-                      textAlign: "center",
+                  <button
+                    className="btn btn-primary mt-3"
+                    onClick={() => {
+                      handleAddToCart(selectedProduct);
+                      handleCloseModal();
                     }}
                   >
-                    Giá: {selectedProduct.giaFormatted}₫
-                  </p>
+                    Thêm vào giỏ hàng
+                  </button>
                 </div>
               </div>
               <div className="modal-footer">
@@ -324,13 +293,6 @@ function Product({ cartItems, setCartItems }) {
                   onClick={handleCloseModal}
                 >
                   Đóng
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => handleAddToCart(selectedProduct)}
-                >
-                  Thêm vào giỏ hàng
                 </button>
               </div>
             </div>
