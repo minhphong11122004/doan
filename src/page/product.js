@@ -26,7 +26,7 @@ function Product({ cartItems, setCartItems }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(""); // Tạo state cho từ khóa tìm kiếm
 
   // Fetch data từ API
   useEffect(() => {
@@ -39,23 +39,28 @@ function Product({ cartItems, setCartItems }) {
         console.error("Error fetching data", error);
       }
     };
+
     fetchData();
   }, []);
 
   // Lọc sản phẩm khi searchQuery thay đổi
   useEffect(() => {
-    const lowerSearchTerm = removeAccents(searchQuery.toLowerCase());
+    const lowerSearchTerm = removeAccents(searchQuery.toLowerCase()); // Loại bỏ dấu khi tìm kiếm
     const filtered = products.filter((product) => {
+      // Kiểm tra tên sản phẩm và giá có chứa từ khóa hay không (loại bỏ dấu)
       const productName = product.productName
-        ? removeAccents(product.productName.toLowerCase())
+        ? removeAccents(product.productName.toLowerCase()) // Loại bỏ dấu khi so sánh
         : "";
       const priceMatches = product.giaFormatted
         ? product.giaFormatted.toString().includes(lowerSearchTerm)
         : false;
+
+      // Trả về true nếu tên sản phẩm hoặc giá khớp với từ khóa
       return productName.includes(lowerSearchTerm) || priceMatches;
     });
+
     setFilteredProducts(filtered); // Cập nhật sản phẩm đã lọc
-  }, [searchQuery, products]);
+  }, [searchQuery, products]); // Lọc lại khi searchQuery hoặc products thay đổi
 
   const showMore = () => {
     hiddenItemsRef.current.forEach((item) => {
@@ -68,7 +73,7 @@ function Product({ cartItems, setCartItems }) {
   };
 
   const handleShowModal = async (product) => {
-    setSelectedProduct(product);
+    setSelectedProduct(product); // Set thông tin sản phẩm khi mở modal
     setShowModal(true);
     localStorage.setItem("productId", product.productId);
 
@@ -115,58 +120,70 @@ function Product({ cartItems, setCartItems }) {
   return (
     <div className="container-fluid">
       <div className="row">
+        {/* Phần tìm kiếm */}
         <div className="navbar-search mb-4 col-12">
           <input
             className="search-input"
             placeholder="Tìm kiếm sản phẩm theo tên hoặc giá"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => setSearchQuery(e.target.value)} // Cập nhật từ khóa khi người dùng nhập
           />
         </div>
+
         <h1 className="mb-5">Bộ sưu tập</h1>
-        {filteredProducts.map((product, index) => (
-          <div
-            key={product.productId}
-            className={`col-md-3 ${index >= 8 ? "hidden" : ""}`}
-            ref={(el) => index >= 8 && (hiddenItemsRef.current[index - 8] = el)}
-          >
-            <div className="card card-border product-card mb-4">
-              <div className="product-image">
-                <img
-                  className="card-img-top"
-                  src={product.hinh}
-                  alt={product.productName}
-                />
-                <div className="button-container1">
-                  <button
-                    className="btn btn-hover-primary xem-them"
-                    onClick={() => handleShowModal(product)}
-                  >
-                    Xem Thêm
-                  </button>
-                  <button
-                    className="btn btn-hover-orange buy-now"
-                    onClick={() => handleAddToCart(product)}
-                  >
-                    Mua Ngay
-                  </button>
+        {/* Hiển thị khi không có sản phẩm khớp với tìm kiếm */}
+        {filteredProducts.length === 0 ? (
+          <p className="text-center">Không có sản phẩm bạn muốn tìm.</p> // Hiển thị nếu không tìm thấy sản phẩm
+        ) : (
+          filteredProducts.map((product, index) => (
+            <div
+              key={product.productId}
+              className={`col-md-3 ${index >= 8 ? "hidden" : ""}`}
+              ref={(el) =>
+                index >= 8 && (hiddenItemsRef.current[index - 8] = el)
+              }
+            >
+              <div className="card card-border product-card mb-4">
+                <div className="product-image">
+                  <img
+                    className="card-img-top"
+                    src={product.hinh}
+                    alt={product.productName}
+                  />
+                  <div className="button-container1">
+                    <button
+                      className="btn btn-hover-primary xem-them"
+                      onClick={() => handleShowModal(product)}
+                    >
+                      Xem Thêm
+                    </button>
+                    <button
+                      className="btn btn-hover-orange buy-now"
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      Mua Ngay
+                    </button>
+                  </div>
+                </div>
+                <div className="card-body">
+                  <h5 className="card-title">{product.productName}</h5>
+                  <p className="card-text">{product.moTa}</p>
+                  <p className="card-text">{product.giaFormatted} VND</p>
                 </div>
               </div>
-              <div className="card-body">
-                <h5 className="card-title">{product.productName}</h5>
-                <p className="card-text">{product.moTa}</p>
-                <p className="card-text">{product.giaFormatted} VND</p>
-              </div>
             </div>
-          </div>
-        ))}
-        <button
-          id="Show"
-          onClick={showMore}
-          className="mt-3 btn btn-primary mx-auto d-block"
-        >
-          Show more
-        </button>
+          ))
+        )}
+
+        {filteredProducts.length > 8 && (
+          <button
+            id="Show"
+            onClick={showMore}
+            className="mt-3 btn btn-primary mx-auto d-block"
+          >
+            Show more
+          </button>
+        )}
       </div>
 
       {/* Modal (Xem Thêm sản phẩm) */}
@@ -178,7 +195,7 @@ function Product({ cartItems, setCartItems }) {
           role="dialog"
         >
           <div className="modal-dialog modal-lg">
-            <div className="modal-content">
+            <div className="modal-content m-8">
               <div className="modal-header">
                 <h5 className="modal-title">{selectedProduct.productName}</h5>
                 <button
@@ -187,12 +204,11 @@ function Product({ cartItems, setCartItems }) {
                   onClick={handleCloseModal}
                 ></button>
               </div>
-              <div className="modal-body d-flex">
+              <div className="modal-body">
                 <div
                   id="more-img"
                   className="carousel slide"
                   data-bs-ride="carousel"
-                  style={{ width: "50%" }}
                 >
                   <div className="carousel-inner">
                     {selectedProduct?.productDetails?.[0]?.hinhAnh &&
@@ -216,84 +232,44 @@ function Product({ cartItems, setCartItems }) {
                     ) : (
                       <div className="carousel-item active">
                         <img
-                          src="https://i.ebayimg.com/images/g/HDEAAOSwArFc9qBa/s-l400.jpg"
+                          src={selectedProduct.hinhAnh}
                           className="d-block w-100 img-thumbnail"
                           alt="Default Product Image"
                         />
                       </div>
                     )}
                   </div>
-                  <button
-                    className="carousel-control-prev"
-                    type="button"
-                    data-bs-target="#more-img"
-                    data-bs-slide="prev"
-                  >
-                    <span
-                      className="carousel-control-prev-icon"
-                      aria-hidden="true"
-                    ></span>
-                    <span className="visually-hidden">Previous</span>
-                  </button>
-                  <button
-                    className="carousel-control-next"
-                    type="button"
-                    data-bs-target="#more-img"
-                    data-bs-slide="next"
-                  >
-                    <span
-                      className="carousel-control-next-icon"
-                      aria-hidden="true"
-                    ></span>
-                    <span className="visually-hidden">Next</span>
-                  </button>
                 </div>
-
-                {/* Chi tiết sản phẩm */}
-                <div style={{ width: "50%", marginLeft: "20px" }}>
-                  <h5>{selectedProduct.productName}</h5>
-                  <p>{selectedProduct.moTa}</p>
-                  <p>{selectedProduct.giaFormatted} VND</p>
-                  <div className="quantity-container mt-3">
-                    <button
-                      className="quantity-btn"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    >
-                      -
-                    </button>
+                <div className="description">
+                  <p className="product-description">
+                    {selectedProduct.productDetails?.[0]?.processor ||
+                      "Mô tả không có"}
+                  </p>
+                  <p className="product-color">
+                    Màu sắc:{" "}
+                    {selectedProduct.productDetails?.[0]?.color || "Chưa có"}
+                  </p>
+                  <p className="product-size">
+                    Kích thước:{" "}
+                    {selectedProduct.productDetails?.[0]?.size || "Chưa có"}
+                  </p>
+                  <p className="product-price">
+                    Giá: {selectedProduct.giaFormatted}₫
+                  </p>
+                  <div className="quantity-control">
+                    <label htmlFor="quantity" className="form-label">
+                      Số lượng:
+                    </label>
                     <input
                       type="number"
-                      className="quantity-input"
+                      id="quantity"
+                      className="form-control"
+                      min="1"
                       value={quantity}
                       onChange={handleQuantityChange}
-                      min="1"
                     />
-                    <button
-                      className="quantity-btn"
-                      onClick={() => setQuantity(quantity + 1)}
-                    >
-                      +
-                    </button>
                   </div>
-                  <button
-                    className="btn btn-primary mt-3"
-                    onClick={() => {
-                      handleAddToCart(selectedProduct);
-                      handleCloseModal();
-                    }}
-                  >
-                    Thêm vào giỏ hàng
-                  </button>
                 </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={handleCloseModal}
-                >
-                  Đóng
-                </button>
               </div>
             </div>
           </div>
