@@ -13,7 +13,7 @@ function removeAccents(str) {
   return str
     .split("")
     .map((char, index) => {
-     const accentIndex = accents.indexOf(char);
+      const accentIndex = accents.indexOf(char);
       return accentIndex !== -1 ? withoutAccents[accentIndex] : char;
     })
     .join("");
@@ -26,7 +26,7 @@ function Product({ cartItems, setCartItems }) {
   const [showModal, setShowModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
-  const [searchQuery, setSearchQuery] = useState(""); // Tạo state cho từ khóa tìm kiếm
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Fetch data từ API
   useEffect(() => {
@@ -40,28 +40,23 @@ function Product({ cartItems, setCartItems }) {
         console.error("Error fetching data", error);
       }
     };
-
     fetchData();
   }, []);
 
   // Lọc sản phẩm khi searchQuery thay đổi
   useEffect(() => {
-    const lowerSearchTerm = removeAccents(searchQuery.toLowerCase()); // Loại bỏ dấu khi tìm kiếm
+    const lowerSearchTerm = removeAccents(searchQuery.toLowerCase());
     const filtered = products.filter((product) => {
-      // Kiểm tra tên sản phẩm và giá có chứa từ khóa hay không (loại bỏ dấu)
       const productName = product.productName
-        ? removeAccents(product.productName.toLowerCase()) // Loại bỏ dấu khi so sánh
+        ? removeAccents(product.productName.toLowerCase())
         : "";
       const priceMatches = product.giaFormatted
         ? product.giaFormatted.toString().includes(lowerSearchTerm)
         : false;
-
-      // Trả về true nếu tên sản phẩm hoặc giá khớp với từ khóa
       return productName.includes(lowerSearchTerm) || priceMatches;
     });
-
     setFilteredProducts(filtered); // Cập nhật sản phẩm đã lọc
-  }, [searchQuery, products]); // Lọc lại khi searchQuery hoặc products thay đổi
+  }, [searchQuery, products]);
 
   const showMore = () => {
     hiddenItemsRef.current.forEach((item) => {
@@ -74,7 +69,7 @@ function Product({ cartItems, setCartItems }) {
   };
 
   const handleShowModal = async (product) => {
-    setSelectedProduct(product); // Set thông tin sản phẩm khi mở modal
+    setSelectedProduct(product);
     setShowModal(true);
     localStorage.setItem("productId", product.productId);
 
@@ -122,19 +117,20 @@ function Product({ cartItems, setCartItems }) {
   return (
     <div className="container-fluid">
       <div className="row">
-      <div className="navbar-search mb-4 col-12">
+        <div className="navbar-search mb-4 col-12">
           <input
             className="search-input"
             placeholder="Tìm kiếm sản phẩm theo tên hoặc giá"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)} // Cập nhật từ khóa khi người dùng nhập
+            onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
         <h1 className="mb-5">Bộ sưu tập</h1>
-        {products.map((product, index) => (
+        {filteredProducts.map((product, index) => (
           <div
-            key={product.productId} className={`col-md-3 ${index >= 8 ? "hidden" : ""}`}
-            ref={(el) => index >= 8 && (hiddenItemsRef.current[index - 8] = el)} // Lưu các sản phẩm ẩn vào ref
+            key={product.productId}
+            className={`col-md-3 ${index >= 8 ? "hidden" : ""}`}
+            ref={(el) => index >= 8 && (hiddenItemsRef.current[index - 8] = el)}
           >
             <div className="card card-border product-card mb-4">
               <div className="product-image">
@@ -146,7 +142,7 @@ function Product({ cartItems, setCartItems }) {
                 <div className="button-container1">
                   <button
                     className="btn btn-hover-primary xem-them"
-                    onClick={() => handleShowModal(product)} // Mở modal khi nhấn "Xem Thêm"
+                    onClick={() => handleShowModal(product)}
                   >
                     Xem Thêm
                   </button>
@@ -166,13 +162,15 @@ function Product({ cartItems, setCartItems }) {
             </div>
           </div>
         ))}
-        <button
-          id="Show"
-          onClick={showMore}
-          className="mt-3 btn btn-primary mx-auto d-block"
-        >
-          Show more
-        </button>
+        {!searchQuery && (
+          <button
+            id="Show"
+            onClick={showMore}
+            className="mt-3 btn btn-primary mx-auto d-block"
+          >
+            Xem thêm
+          </button>
+        )}
       </div>
 
       {/* Modal (Xem Thêm sản phẩm) */}
@@ -193,7 +191,6 @@ function Product({ cartItems, setCartItems }) {
                   onClick={handleCloseModal}
                 ></button>
               </div>
-              {/* Modal Body */}
               <div className="modal-body d-flex">
                 <div
                   id="more-img"
@@ -208,7 +205,8 @@ function Product({ cartItems, setCartItems }) {
                         (image, index) => (
                           <div
                             key={index}
-                            className={`carousel-item ${index === 0 ? "active" : ""}`}
+                            className={`carousel-item ${index === 0 ? "active" : ""
+                              }`}
                           >
                             <img
                               src={image}
@@ -234,7 +232,10 @@ function Product({ cartItems, setCartItems }) {
                     data-bs-target="#more-img"
                     data-bs-slide="prev"
                   >
-                    <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span
+                      className="carousel-control-prev-icon"
+                      aria-hidden="true"
+                    ></span>
                     <span className="visually-hidden">Previous</span>
                   </button>
                   <button
@@ -243,70 +244,63 @@ function Product({ cartItems, setCartItems }) {
                     data-bs-target="#more-img"
                     data-bs-slide="next"
                   >
-                    <span className="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span
+                      className="carousel-control-next-icon"
+                      aria-hidden="true"
+                    ></span>
                     <span className="visually-hidden">Next</span>
                   </button>
                 </div>
 
-                <div className="modal-text" style={{ width: "50%", paddingLeft: "20px" }}>
-                  <p className="product-description"
-                    style={{
-                      height: "20vh",
-                    }}>
-                    {selectedProduct.productDetails?.[0]?.processor ||
-                      "VÒNG TAY ĐÁ THẠCH ANH HỒNG CÓ SAO TỰ NHIÊN VÒNG TAY ĐÁ THẠCH ANH HỒNG CÓ SAO TỰ NHIÊN VÒNG TAY ĐÁ THẠCH ANH HỒNG CÓ SAO TỰ NHIÊN"}
-                  </p>
-                  <p className="product-color">
-                    Màu sắc: {selectedProduct.productDetails?.[0]?.color || "Chưa có"}
-                  </p>
-                  <div className="product-size">
-                    <label htmlFor="size-select">Kích thước:</label>
-                    <span></span>
-                  </div>
-
-                  <div className="quantity-control"
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      marginTop: "20px",
-                      textAlign: "center"
-                    }}
-                  >
-                    <label htmlFor="quantity" className="form-label">
-                      Số lượng:
-                    </label>
+                {/* Chi tiết sản phẩm */}
+                <div style={{ width: "50%", marginLeft: "20px" }}>
+                  <h5>{selectedProduct.productName}</h5>
+                  <p>{selectedProduct.moTa}</p>
+                  <p>{selectedProduct.giaFormatted} VND</p>
+                  <div className="quantity-container mt-3">
+                    <button
+                      className="quantity-btn"
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    >
+                      -
+                    </button>
                     <input
-                      style={{ width: "200px", }}
                       type="number"
-                      id="quantity"
-                      className="form-control"
-                      min="1"
+                      className="quantity-input"
                       value={quantity}
                       onChange={handleQuantityChange}
+                      min="1"
                     />
+                    <button
+                      className="quantity-btn"
+                      onClick={() => setQuantity(quantity + 1)}
+                    >
+                      +
+                    </button>
                   </div>
                   <p className="product-price text-danger fw-bold fs-4"
                     style={{
-                      textAlign: "center",
+                    textAlign: "center",
+                    }}
+                  ></p>
+                  <button
+                    className="btn btn-primary mt-3"
+                    onClick={() => {
+                      handleAddToCart(selectedProduct);
+                      handleCloseModal();
                     }}
                   >
-                    Giá: {selectedProduct.giaFormatted}₫
-                  </p>
+                    Thêm vào giỏ hàng
+                  </button>
                 </div>
               </div>
               <div className="modal-footer">
                 <button
-                  type="button" className="btn btn-secondary"
+                  type="button"
+                  className="btn btn-secondary"
                   onClick={handleCloseModal}
                 >
                   Đóng
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  onClick={() => handleAddToCart(selectedProduct)}
-                >
-                  Thêm vào giỏ hàng
                 </button>
               </div>
             </div>
