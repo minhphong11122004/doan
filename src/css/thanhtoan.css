@@ -71,9 +71,8 @@ button {
     transition: background-color 0.3s;
 }
 
-
 /* Tùy chỉnh cho modal */
-.modal-content {
+.table-striped {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
@@ -81,17 +80,17 @@ button {
 }
 
 /* Thêm hiệu ứng khi mở modal */
-.modal.fade .modal-dialog {
+.table-striped .fade .table-dialog {
     transform: scale(0.9);
     transition: transform 0.3s ease-in-out;
 }
 
-.modal.show .modal-dialog {
+.table-striped .show .table-dialog {
     transform: scale(1);
 }
 
 /* Modal Header */
-.modal-header {
+.table-striped .header {
     background-color: rgb(253, 227, 197);
     color: white;
     border-bottom: 2px solid #ddd;
@@ -99,13 +98,13 @@ button {
     padding: 15px 20px;
 }
 
-.modal-body{
+.table-striped .body {
     display: flex;
     gap: 50px;
-    
 }
+
 /* Modal Footer */
-.modal-footer {
+.table-striped .footer {
     background-color: #f1f1f1;
     border-top: 2px solid #ddd;
     padding: 15px;
@@ -113,86 +112,88 @@ button {
     justify-content: space-between;
 }
 
-/* Các nút trong modal */
-.modal-footer button {
+/* Các nút trong table-striped */
+.table-striped .footer button {
     padding: 10px 20px;
     border-radius: 5px;
     font-weight: bold;
 }
 
-.modal-footer button.primary {
+.table-striped .footer button.primary {
     background-color: #28a745;
     /* Màu xanh cho thanh toán trực tiếp */
     color: white;
     border: none;
 }
 
-.modal-footer button.secondary {
+.table-striped .footer button.secondary {
     background-color: #007bff;
     /* Màu xanh dương cho thanh toán QR */
     color: white;
     border: none;
 }
 
-.modal-footer button.danger {
+.table-striped .footer button.danger {
     background-color: #dc3545;
     /* Màu đỏ cho nút hủy */
     color: white;
     border: none;
 }
 
-.modal-footer button:hover {
+.table-striped .footer button:hover {
     opacity: 0.8;
     cursor: pointer;
 }
 
 /* Nội dung modal */
-.modal-body p {
+.table-striped .body p {
     font-size: 1rem;
     line-height: 1.6;
 }
 
-.modal-body hr {
+.table-striped .body hr {
     margin: 10px 0;
     border: 1px solid #ddd;
 }
 
 /* Đảm bảo modal hiển thị đúng vị trí trên màn hình */
-.modal-dialog {
+.table-striped .table-dialog {
     max-width: 600px;
     margin: 30px auto;
 }
 
 /* Nếu bạn muốn thay đổi màu nền cho modal khi mở */
-.modal-backdrop.show {
+.table-striped .backdrop.show {
     background-color: rgba(0, 0, 0, 0.6);
 }
 
 /* Bảng trong Modal */
-.modal-body table {
+.table-striped .body table {
     width: 100%;
     margin-top: 10px;
     border-collapse: collapse;
 }
 
-.modal-body th,
-.modal-body td {
+.table-striped .body th,
+.table-striped .body td {
     padding: 12px;
     text-align: left;
     border: 1px solid #ddd;
 }
 
-.modal-body th {
+.table-striped .body th {
     background-color: #f4f4f4;
     font-weight: bold;
 }
 
-.modal-body tr:nth-child(even) {
+.table-striped .body tr:nth-child(even) {
     background-color: #f9f9f9;
 }
+
 .mb-3 {
     text-align: left;
 }
-.table td{
+
+.table-striped .table td {
     text-align: center;
 }

@@ -11,7 +11,7 @@ function Account() {
     email: "",
     phone: "",
     diachi: "",
-    password: "", // password lấy từ dữ liệu hiện tại trong cơ sở dữ liệu
+    password: "",
   });
   const [passwordInfo, setPasswordInfo] = useState({
     currentPassword: "",
@@ -23,11 +23,14 @@ function Account() {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Lấy userId từ localStorage khi component được khởi tạo
+  const [orderHistory, setOrderHistory] = useState([]); // Giữ thông tin lịch sử đơn hàng
+
+  // Lấy thông tin người dùng và lịch sử đơn hàng khi component được render
   useEffect(() => {
-    const userId = localStorage.getItem("userid"); // Lấy userId từ localStorage
+    const userId = localStorage.getItem("userid");
     if (userId) {
-      fetch(`https://localhost:7256/api/Users/${userId}`) // Thay bằng endpoint thực tế của bạn
+      // Lấy thông tin người dùng
+      fetch(`https://localhost:7256/api/Users/${userId}`)
         .then((response) => response.json())
         .then((data) => {
           setUserInfo({
@@ -37,12 +40,31 @@ function Account() {
             email: data.email,
             phone: data.phone,
             diachi: data.diachi,
-            password: data.password, // Đặt mật khẩu hiện tại từ dữ liệu lấy được
+            password: data.password,
           });
-          console.log(data);
         })
         .catch((error) =>
           console.error("Lỗi khi lấy dữ liệu người dùng:", error)
+        );
+
+      // Lấy lịch sử đơn hàng
+      fetch(`https://localhost:7256/api/Orders/${userId}`)
+        .then((response) => {
+          if (response.status === 404) {
+            // Nếu API trả về 404 (không tìm thấy đơn hàng), cập nhật orderHistory
+            setOrderHistory("Chưa đặt đơn hàng nào");
+            setOrderHistory([]);
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (Array.isArray(data) && data.length > 0) {
+            // Nếu dữ liệu là đối tượng đơn hàng, đặt state với đối tượng đó
+            setOrderHistory(data);
+          }
+        })
+        .catch((error) =>
+          console.error("Lỗi khi lấy dữ liệu đơn hàng:", error)
         );
     } else {
       console.error("User ID không tồn tại trong localStorage");
@@ -55,8 +77,6 @@ function Account() {
 
   const savePersonalInfo = () => {
     const apiEndpoint = `https://localhost:7256/api/Users/${userInfo.userId}`;
-    console.log("Dữ liệu cá nhân:", userInfo);
-
     fetch(apiEndpoint, {
       method: "PUT",
       headers: {
@@ -78,55 +98,45 @@ function Account() {
   };
 
   const savePassword = async () => {
-    const userId = userInfo.userId;
-    const apiEndpoint = `https://localhost:7256/api/Users/${userId}`;
-
-    // Kiểm tra mật khẩu hiện tại
     if (passwordInfo.currentPassword !== userInfo.password) {
       alert("Mật khẩu hiện tại không đúng!");
       return;
     }
 
-    // Kiểm tra mật khẩu mới và xác nhận mật khẩu
     if (passwordInfo.newPassword !== passwordInfo.confirmPassword) {
       alert("Mật khẩu mới và xác nhận mật khẩu không khớp!");
       return;
     }
 
-    // Chỉ gửi mật khẩu mới nếu nó không trống
     const payload = {
       userId: userInfo.userId,
       username: userInfo.userName,
-      password: passwordInfo.newPassword || userInfo.password, // Nếu không có mật khẩu mới, dùng mật khẩu cũ
+      password: passwordInfo.newPassword || userInfo.password,
       fullName: userInfo.fullName,
       email: userInfo.email,
-      roleId: userInfo.roleId, // Cần giữ nguyên nếu không thay đổi
+      roleId: userInfo.roleId,
       diachi: userInfo.diachi,
       phone: userInfo.phone,
     };
 
-    console.log("Dữ liệu mật khẩu gửi lên:", payload);
-
     try {
-      const response = await fetch(apiEndpoint, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `https://localhost:7256/api/Users/${userInfo.userId}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       if (response.ok) {
         alert("Mật khẩu đã được thay đổi!");
         window.location.reload();
       } else {
         const errorData = await response.json();
-        console.error("Chi tiết lỗi:", errorData);
-        alert(
-          `Lỗi ${response.status}: ${
-            errorData.message || "Không thể thay đổi mật khẩu!"
-          }`
-        );
+        alert(`Lỗi: ${errorData.message || "Không thể thay đổi mật khẩu!"}`);
       }
     } catch (error) {
       console.error("Lỗi khi kết nối API:", error);
@@ -150,6 +160,12 @@ function Account() {
     }));
   };
 
+  // Hàm để định dạng ngày tháng dễ đọc
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "2-digit", day: "2-digit" };
+    return new Date(dateString).toLocaleDateString("vi-VN", options);
+  };
+
   return (
     <div className="custom-container">
       <div className="custom-tab-container">
@@ -168,6 +184,14 @@ function Account() {
           onClick={() => openTab("changePassword")}
         >
           Thay đổi mật khẩu
+        </div>
+        <div
+          className={`custom-tab-button ${
+            activeTab === "orderHistory" ? "active" : ""
+          }`}
+          onClick={() => openTab("orderHistory")}
+        >
+          Lịch sử đơn hàng
         </div>
       </div>
 
@@ -248,7 +272,6 @@ function Account() {
             </button>
           </div>
         </div>
-
         {/* Tab Thay đổi mật khẩu */}
         <div
           id="changePassword"
@@ -320,9 +343,51 @@ function Account() {
           </form>
           <div className="text-center">
             <button className="custom-btn" onClick={savePassword}>
-              Lưu thay đổi mật khẩu
+              Thay đổi mật khẩu
             </button>
           </div>
+        </div>
+
+        {/* Tab Lịch sử giao dịch */}
+        <div
+          id="orderHistory"
+          className={`custom-tab-content ${
+            activeTab === "orderHistory" ? "active" : ""
+          }`}
+        >
+          <h3>Lịch sử đơn hàng</h3>
+          {/* Kiểm tra nếu orderHistory là chuỗi thông báo lỗi hoặc không có đơn hàng */}
+          {orderHistory === "Chưa đặt đơn hàng nào" ? (
+            <p>{orderHistory}</p>
+          ) : (
+            <table className="order-history-table">
+              <thead>
+                <tr>
+                  <th>ID Đơn hàng</th>
+                  <th>Ngày mua</th>
+
+                  <th>Số lượng</th>
+                  <th>Địa chỉ</th>
+                  <th>Số điện thoại</th>
+                  <th>Email</th>
+                  <th>Tổng tiền</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderHistory.map((order) => (
+                  <tr key={order.orderId}>
+                    <td>{order.orderId}</td>
+                    <td>{formatDate(order.ngayMua)}</td>
+                    <td>{order.soLuong}</td>
+                    <td>{order.diaChi}</td>
+                    <td>{order.phone}</td>
+                    <td>{order.email}</td>
+                    <td>{order.tongTien} VND</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
     </div>

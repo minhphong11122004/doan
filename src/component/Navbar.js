@@ -7,23 +7,34 @@ function Navbar({ cartCount }) {
   const navigate = useNavigate();
   const [username, setUserName] = useState(localStorage.getItem("username"));
   const [userId, setUserId] = useState(localStorage.getItem("userid"));
+  const [isAdmin, setIsAdmin] = useState(
+    localStorage.getItem("role") === "admin"
+  );
 
+  // Lấy thông tin người dùng từ localStorage khi ứng dụng load
   useEffect(() => {
     const storedUserName = localStorage.getItem("username");
     const storedUserId = localStorage.getItem("userid");
+    const storedUserRole = localStorage.getItem("role");
+
     setUserName(storedUserName);
     setUserId(storedUserId);
+    setIsAdmin(storedUserRole === "admin");
   }, []);
 
+  // Xử lý đăng xuất
   const handleLogout = () => {
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("username");
     localStorage.removeItem("userid");
+    localStorage.removeItem("role"); // Xóa role nếu có
     setUserName(null);
+    setIsAdmin(false); // Reset trạng thái admin
     navigate("/");
-    window.location.reload();
+    window.location.reload(); // Tải lại trang khi đăng xuất
   };
 
+  // Chuyển hướng đến trang đăng nhập
   const handleLogin = () => {
     navigate("/login");
   };
@@ -32,9 +43,10 @@ function Navbar({ cartCount }) {
     <nav className="navbar">
       <div className="navbar-brand">
         <Link to="/" className="brand-logo">
-          <img src={logo_icon} alt="" />
+          <img src={logo_icon} alt="Logo" />
         </Link>
       </div>
+
       <div className="navbar-links">
         <Link to="/">Trang chủ</Link>
         <Link to="/product">Bộ sưu tập</Link>
@@ -44,6 +56,13 @@ function Navbar({ cartCount }) {
             {cartCount > 0 ? `(${cartCount})` : ""}
           </span>
         </Link>
+
+        {/* Hiển thị thêm link quản lý nếu là admin */}
+        {isAdmin && (
+          <Link to="/admin" className="nav-link">
+            Quản lý
+          </Link>
+        )}
       </div>
 
       <div className="navbar-user">

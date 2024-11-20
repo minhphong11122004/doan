@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios"; // Đảm bảo bạn có axios để gọi API
+import axios from "axios";
 import "../css/Cart.css";
 
 function Cart({ cartItems, setCartItems }) {
   const [notification, setNotification] = useState("");
-  const [loading, setLoading] = useState(true); // Thêm state loading
+  const [loading, setLoading] = useState(true);
   const [updatedCartItems, setUpdatedCartItems] = useState([]);
 
   // Lấy giỏ hàng từ localStorage khi trang tải
@@ -164,10 +164,10 @@ function Cart({ cartItems, setCartItems }) {
                 </thead>
                 <tbody>
                   {updatedCartItems.map((item, index) => {
-                    // Tách size từ chuỗi
+                    // Kiểm tra nếu productDetails có kích cỡ
                     const sizes =
                       item.productDetails && item.productDetails[0]?.size
-                        ? item.productDetails[0].size.split(", ") // Tách chuỗi thành mảng
+                        ? item.productDetails[0].size.split(", ") // Tách chuỗi thành mảng nếu có kích cỡ
                         : [];
 
                     return (
@@ -199,20 +199,19 @@ function Cart({ cartItems, setCartItems }) {
                             : "Chưa có màu"}
                         </td>
                         <td>
-                          {/* Dropdown chọn size */}
-                          <select
-                            value={item.selectedSize || ""}
-                            onChange={(e) =>
-                              handleSizeChange(index, e.target.value)
-                            }
-                          >
-                            <option value="">Chọn kích cỡ</option>
-                            {sizes.map((size, sizeIndex) => (
-                              <option key={sizeIndex} value={size}>
-                                {size}
-                              </option>
-                            ))}
-                          </select>
+                          {/* Nếu có kích cỡ trong productDetails, chọn mặc định */}
+                          {sizes.length > 0 ? (
+                            <span>{item.size}</span> // Hiển thị kích cỡ từ productDetails
+                          ) : (
+                            <input
+                              type="text"
+                              placeholder="Nhập kích cỡ"
+                              value={item.selectedSize || ""}
+                              onChange={(e) =>
+                                handleSizeChange(index, e.target.value)
+                              }
+                            />
+                          )}
                         </td>
                         <td>
                           <button
