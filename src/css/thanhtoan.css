@@ -66,7 +66,7 @@ button {
     padding: 12px;
     font-size: 1rem;
     color: white;
-    background-color: #28a745;
+    background-color: #ff7b54;
     cursor: pointer;
     transition: background-color 0.3s;
 }
@@ -121,7 +121,7 @@ button {
 }
 
 .modal-footer button.primary {
-    background-color: #28a745;
+    background-color: #ff7b54;
     /* Màu xanh cho thanh toán trực tiếp */
     color: white;
     border: none;
@@ -135,7 +135,7 @@ button {
 }
 
 .modal-footer button.danger {
-    background-color: #dc3545;
+    background-color: #ff7b54;
     /* Màu đỏ cho nút hủy */
     color: white;
     border: none;

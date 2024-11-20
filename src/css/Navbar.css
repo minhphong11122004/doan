@@ -1,72 +1,155 @@
+@media (max-width: 768px) {
+    .search-input {
+        width: 250px; /* Giảm chiều rộng thanh tìm kiếm */
+    }
+
+    .navbar-icons {
+        margin-right: 10px; /* Giảm khoảng cách */
+    }
+
+    .navbar-user {
+        margin-left: 50px; /* Giảm khoảng cách */
+    }
+}
+
 .navbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgb(253, 227, 197)    ; /* Màu nền */
+    background-color: #fbeedc; /* Màu nền gần giống ảnh */
     padding: 15px 30px;
-    color: white;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.navbar-brand {
-    font-size: 1.5rem;
-    font-weight: bold;
-}
-.navbar-brand img {
+    color: #333;
+}   
+.navbar-brand img{
+    margin: 10px;
     width: 90px;
     height: 10vh;
+}
+
+
+.navbar-search {
+    flex: 2; /* Để phần tìm kiếm chiếm nhiều không gian hơn */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 30px; /* Tạo khoảng cách giữa thanh tìm kiếm và icons */
+}
+
+.search-input {
+    width: 400px; /* Chiều rộng của thanh tìm kiếm */
+    padding: 10px;
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 14px;
+    transition: box-shadow 0.3s;
+}
+
+.navbar-icons {
+    display: flex;
+    align-items: center;
+    gap: 200px; /* Khoảng cách giữa các icon */
+    margin-right: 50px; /* Đẩy nhóm icon sang bên*/
+
+}
+
+
+.navbar-links a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 19px;
+    transition: color 0.3s;
 }
 
 .navbar-links {
     display: flex;
     gap: 20px;
+    align-items: center;
+    
 }
-
-.navbar-links a {
-    color: black;
-    text-decoration: none;
-    transition: color 0.3s;
-}
-
 .navbar-links a:hover {
-    color: #ffc107; /* Màu khi hover */
+    color: #ff7b54; /* Màu cam nhạt khi hover */
+
 }
 
-
-
-
-.search-input {
+.navbar-search {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .search-input {
     width: 500px;
-    padding: 8px;
-    border-radius: 4px;
-    border: none;
+    padding: 10px;
+    padding-left: 30px; /* Add space for the icon */
+    border-radius: 0; /* Square borders */
+    border: 1px solid #ccc;
     outline: none;
+    font-size: 14px;
+    transition: box-shadow 0.3s;
+  }
+  
+  .search-icon {
+    position: absolute; /* Position the icon inside the search container */
+    left: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .search-icon i {
+    font-size: 18px; /* Adjust the size of the magnifying glass icon */
+    color: #000000; /* Icon color */
+  }
+  
+.search-input:focus {
+    box-shadow: 0 0 5px rgba(255, 123, 84, 0.7); /* Hiệu ứng khi focus */
 }
 
 .navbar-user {
     display: flex;
     align-items: center;
+    gap: 15px;
+}
+.login{
+    margin-right: 50px;
+    border-radius: 20px;
+}
+.logout{
+    margin-right: 50px;
+    border-radius: 20px;
+}
+.navbar-user img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.navbar-icons {
+    display: flex;
+    align-items: center;
     gap: 10px;
 }
 
-.user-id {
-    margin-right: 10px;
-}
-
-.logout, .login {
-    background-color: #ffc107; /* Màu nút */
+.navbar-icons a {
     color: #333;
-    border: none;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+    font-size: 25px;
+    transition: color 0.3s;
 }
 
-.logout:hover, .login:hover {
-    background-color: #ffca2b; /* Màu khi hover */
+.navbar-icons a:hover {
+    color: #ff7b54;
 }
+
 .cart-count {
-    color: red; /* Thay đổi màu sắc ở đây */
-    font-weight: bold; /* Thêm đậm nếu bạn muốn */
+    color: red; /* Màu đỏ cho số lượng trong giỏ hàng */
+    font-weight: bold;
+    font-size: 14px;
+    position: relative;
+    top: -5px;
+    margin-left: -10px;
 }
+
