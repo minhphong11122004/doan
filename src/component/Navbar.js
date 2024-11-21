@@ -4,17 +4,22 @@ import { useState, useEffect } from "react";
 import User_icon from "../Assets/person.png";
 import logo_icon from "../Assets/logo.png";
 
-function Navbar({ cartCount = 0 }) {
+function Navbar({ cartCount }) {
   const navigate = useNavigate();
-  const [username, setUsername] = useState(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [username, setUserName] = useState(localStorage.getItem("username"));
+  const [userId, setUserId] = useState(localStorage.getItem("userid"));
+  const [isAdmin, setIsAdmin] = useState(
+    localStorage.getItem("role") === "admin"
+  );
 
   // Lấy thông tin người dùng từ localStorage khi ứng dụng load
   useEffect(() => {
-    const storedUsername = localStorage.getItem("username");
+    const storedUserName = localStorage.getItem("username");
+    const storedUserId = localStorage.getItem("userid");
     const storedUserRole = localStorage.getItem("role");
 
-    setUsername(storedUsername);
+    setUserName(storedUserName);
+    setUserId(storedUserId);
     setIsAdmin(storedUserRole === "admin");
   }, []);
 
@@ -24,7 +29,7 @@ function Navbar({ cartCount = 0 }) {
     localStorage.removeItem("username");
     localStorage.removeItem("userid");
     localStorage.removeItem("role"); // Xóa role nếu có
-    setUsername(null);
+    setUserName(null);
     setIsAdmin(false); // Reset trạng thái admin
     navigate("/");
     window.location.reload(); // Tải lại trang khi đăng xuất
@@ -38,20 +43,19 @@ function Navbar({ cartCount = 0 }) {
   return (
     <nav className="navbar">
       <div className="navbar-brand">
-        <Link to="/">
-          <img src={logo_icon} alt="logo" />
+        <Link to="/" className="brand-logo">
+          <img src={logo_icon} alt="Logo" />
         </Link>
       </div>
+
       <div className="navbar-links">
         <Link to="/">Trang chủ</Link>
         <Link to="/product">Bộ sưu tập</Link>
         <Link to="/about">Về chúng tôi</Link>
       </div>
       <div className="navbar-search">
-        <div className="search-icon">
-          <i className="fa fa-search"></i>
-        </div>
-        <input className="search-input" placeholder="Tìm kiếm sản phẩm..." />
+        <div className="search-icon"></div>
+        <input className="search-input" />
       </div>
       <div className="navbar-icons">
         <Link to="/wishlist">
@@ -61,13 +65,20 @@ function Navbar({ cartCount = 0 }) {
           <i className="fa fa-shopping-cart"></i>
           {cartCount > 0 && <span className="cart-count">({cartCount})</span>}
         </Link>
+
+        {/* Hiển thị thêm link quản lý nếu là admin */}
+        {isAdmin && (
+          <Link to="/admin" className="nav-link">
+            Quản lý
+          </Link>
+        )}
       </div>
       <div className="navbar-user">
         {username ? (
           <>
             {/* Hiển thị ảnh đại diện khi đăng nhập */}
             <Link to="/account">
-              <img src={User_icon} alt="user-icon" />
+              <img src={User_icon} alt="" />
             </Link>
             <button onClick={handleLogout} className="logout">
               Đăng xuất
