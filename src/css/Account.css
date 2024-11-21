@@ -182,7 +182,7 @@ table {
 th,
 td {
     padding: 12px;
-    text-align: left;
+    text-align: center;
     border: 1px solid #ddd;
     font-size: 14px;
     color: #555;
@@ -234,3 +234,4 @@ tbody tr:nth-child(even) {
     font-size: 14px;
     color: #007bff;
   }
+  

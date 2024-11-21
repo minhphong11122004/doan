@@ -12,6 +12,7 @@ import {
   ModalFooter,
 } from "reactstrap";
 import "../css/thanhtoan.css";
+import axios from "axios"; // Thêm axios nếu bạn sử dụng axios
 
 function ThanhToan() {
   const [name, setName] = useState("");
@@ -21,6 +22,7 @@ function ThanhToan() {
   const [total, setTotal] = useState(0);
   const [modalOpen, setModalOpen] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("");
+  const UserId = localStorage.getItem("userid");
 
   const [cartItems, setCartItems] = useState(
     JSON.parse(localStorage.getItem("cartItems")) || []
@@ -53,15 +55,13 @@ function ThanhToan() {
   }, [cartItems]);
 
   const handleOrder = () => {
-    if (!name || !phone || !address || !email) {
+    if (!phone || !address || !email) {
       alert("Vui lòng điền đầy đủ thông tin.");
       return;
     }
 
     const orderData = {
-      OrderId: Math.floor(Math.random() * 1000000),
-      CustomerName: name,
-      ProductName: cartItems.map((item) => item.productName).join(", "),
+      UserId: UserId,
       NgayMua: new Date(),
       SoLuong: cartItems.reduce((acc, item) => acc + item.quantity, 1),
       DiaChi: address,
@@ -69,9 +69,9 @@ function ThanhToan() {
       Email: email,
       TongTien: total,
       // Lưu thông tin kích cỡ và số lượng
-      Details: cartItems.map((item) => ({
+      orderDetails: cartItems.map((item) => ({
         productName: item.productName,
-        size: item.selectedSize || "Chưa chọn kích cỡ", // Hiển thị kích cỡ nếu có
+        size: item.size || "Chưa chọn kích cỡ", // Hiển thị kích cỡ nếu có
         quantity: item.quantity,
         price: item.giaFormatted,
       })),
@@ -89,6 +89,46 @@ function ThanhToan() {
 
   const handlePaymentMethod = (method) => {
     setPaymentMethod(method);
+    // Gọi API để tạo đơn hàng khi chọn phương thức thanh toán
+    if (method === "COD") {
+      postOrderData("COD"); // Gọi API thanh toán khi nhận hàng
+    } else if (method === "QR") {
+      postOrderData("QR"); // Gọi API thanh toán qua QR
+    }
+  };
+
+  // Gọi API gửi đơn hàng lên server
+  const postOrderData = async (method) => {
+    const orderData = {
+      UserId: UserId,
+      NgayMua: new Date(),
+      SoLuong: cartItems.reduce((acc, item) => acc + item.quantity, 1),
+      DiaChi: address,
+      Phone: phone,
+      Email: email,
+      TongTien: total,
+      orderDetails: cartItems.map((item) => ({
+        productName: item.productName,
+        size: item.size || "Chưa chọn kích cỡ",
+        quantity: item.quantity,
+        price: item.giaFormatted,
+      })),
+      PaymentMethod: method, // Thêm phương thức thanh toán
+    };
+
+    try {
+      const response = await axios.post(
+        "https://localhost:7256/api/Orders",
+        orderData
+      ); // Cập nhật URL API
+      console.log("Đặt hàng thành công:", response.data);
+      alert("Đơn hàng của bạn đã được tạo thành công!");
+      setModalOpen(false); // Đóng modal sau khi gửi đơn hàng
+      // Có thể thêm hành động chuyển hướng hoặc làm gì đó sau khi gửi thành công
+    } catch (error) {
+      console.error("Lỗi khi tạo đơn hàng:", error);
+      alert("Đã có lỗi xảy ra, vui lòng thử lại.");
+    }
   };
 
   // Effect lưu giỏ hàng vào localStorage khi có sự thay đổi
@@ -105,17 +145,6 @@ function ThanhToan() {
     >
       <h2 className="mb-4">Nhập thông tin để xác nhận thanh toán</h2>
       <Form>
-        <FormGroup>
-          <Label for="name">Tên:</Label>
-          <Input
-            type="text"
-            id="name"
-            placeholder="Nhập tên của bạn"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </FormGroup>
-
         <FormGroup>
           <Label for="phone">Số điện thoại:</Label>
           <Input
@@ -173,8 +202,7 @@ function ThanhToan() {
                 </td>
                 <td>{formatPrice(item.giaFormatted)}</td>
                 <td>{item.quantity}</td>
-                <td>{item.selectedSize || "Chưa chọn kích cỡ"}</td>{" "}
-                {/* Hiển thị kích cỡ */}
+                <td>{item.size || "Chưa chọn kích cỡ"}</td>
               </tr>
             ))}
           </tbody>

@@ -11,6 +11,7 @@ function Product({ cartItems, setCartItems }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSize, setSelectedSize] = useState(""); // State cho kích cỡ đã chọn
 
   // Fetch data từ API
   useEffect(() => {
@@ -39,8 +40,15 @@ function Product({ cartItems, setCartItems }) {
 
   const handleShowModal = async (product) => {
     setSelectedProduct(product);
+    setSelectedSize(""); // Reset size khi mở modal
     setShowModal(true);
     localStorage.setItem("productId", product.productId);
+
+    // Lấy kích cỡ đã lưu từ localStorage (nếu có)
+    const savedSize = localStorage.getItem("selectedSize");
+    if (savedSize) {
+      setSelectedSize(savedSize);
+    }
 
     try {
       const storedProductId = localStorage.getItem("productId");
@@ -59,6 +67,7 @@ function Product({ cartItems, setCartItems }) {
   const handleCloseModal = () => {
     setShowModal(false);
     localStorage.removeItem("productId");
+    setSelectedSize(""); // Reset size khi đóng modal
   };
 
   const handleQuantityChange = (e) => {
@@ -67,18 +76,27 @@ function Product({ cartItems, setCartItems }) {
   };
 
   const handleAddToCart = (product) => {
+    if (!selectedSize) {
+      alert("Vui lòng chọn kích cỡ!");
+      return;
+    }
+
+    // Lưu thông tin size vào localStorage
+    localStorage.setItem("selectedSize", selectedSize);
+
     setCartItems((prevItems) => {
       const existingItem = prevItems.find(
-        (item) => item.productId === product.productId
+        (item) =>
+          item.productId === product.productId && item.size === selectedSize
       );
       if (existingItem) {
         return prevItems.map((item) =>
-          item.productId === product.productId
-            ? { ...item, quantity: item.quantity + 1 }
+          item.productId === product.productId && item.size === selectedSize
+            ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       } else {
-        return [...prevItems, { ...product, quantity: 1 }];
+        return [...prevItems, { ...product, quantity, size: selectedSize }];
       }
     });
   };
@@ -154,6 +172,7 @@ function Product({ cartItems, setCartItems }) {
                 ></button>
               </div>
               <div className="modal-body d-flex">
+                {/* Hình ảnh sản phẩm */}
                 <div
                   id="more-img"
                   className="carousel slide"
@@ -162,13 +181,14 @@ function Product({ cartItems, setCartItems }) {
                 >
                   <div className="carousel-inner">
                     {selectedProduct?.productDetails?.[0]?.hinhAnh &&
-                      selectedProduct.productDetails[0].hinhAnh.length > 0 ? (
+                    selectedProduct.productDetails[0].hinhAnh.length > 0 ? (
                       JSON.parse(selectedProduct.productDetails[0].hinhAnh).map(
                         (image, index) => (
                           <div
                             key={index}
-                            className={`carousel-item ${index === 0 ? "active" : ""
-                              }`}
+                            className={`carousel-item ${
+                              index === 0 ? "active" : ""
+                            }`}
                           >
                             <img
                               src={image}
@@ -187,45 +207,71 @@ function Product({ cartItems, setCartItems }) {
                         />
                       </div>
                     )}
+
+                    <button
+                      className="carousel-control-prev"
+                      type="button"
+                      data-bs-target="#more-img"
+                      data-bs-slide="prev"
+                    >
+                      <span
+                        className="carousel-control-prev-icon"
+                        aria-hidden="true"
+                      ></span>
+                      <span className="visually-hidden">Previous</span>
+                    </button>
+                    <button
+                      className="carousel-control-next"
+                      type="button"
+                      data-bs-target="#more-img"
+                      data-bs-slide="next"
+                    >
+                      <span
+                        className="carousel-control-next-icon"
+                        aria-hidden="true"
+                      ></span>
+                      <span className="visually-hidden">Next</span>
+                    </button>
                   </div>
-                  <button
-                    className="carousel-control-prev"
-                    type="button"
-                    data-bs-target="#more-img"
-                    data-bs-slide="prev"
-                  >
-                    <span
-                      className="carousel-control-prev-icon"
-                      aria-hidden="true"
-                    ></span>
-                    <span className="visually-hidden">Previous</span>
-                  </button>
-                  <button
-                    className="carousel-control-next"
-                    type="button"
-                    data-bs-target="#more-img"
-                    data-bs-slide="next"
-                  >
-                    <span
-                      className="carousel-control-next-icon"
-                      aria-hidden="true"
-                    ></span>
-                    <span className="visually-hidden">Next</span>
-                  </button>
                 </div>
 
                 {/* Chi tiết sản phẩm */}
-                <div style={{ width: "50%", marginLeft: "20px" }}>
+                <div
+                  style={{
+                    width: "50%",
+                    marginLeft: "20px",
+                    textAlign: "left",
+                  }}
+                >
                   <h5>{selectedProduct.productName}</h5>
                   <p>{selectedProduct.moTa}</p>
                   <p>{selectedProduct.giaFormatted} VND</p>
+                  {selectedProduct.productDetails &&
+                    selectedProduct.productDetails.length > 0 &&
+                    selectedProduct.productDetails[0].size && (
+                      <div className="mt-3">
+                        <label htmlFor="size" className="form-label">
+                          Chọn kích cỡ
+                        </label>
+                        <select
+                          id="size"
+                          className="form-select"
+                          onChange={(e) => setSelectedSize(e.target.value)}
+                          value={selectedSize}
+                        >
+                          <option value="">Chọn kích cỡ</option>
+                          {selectedProduct.productDetails[0].size
+                            .split(", ")
+                            .map((size, index) => (
+                              <option key={index} value={size}>
+                                {size}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                    )}
+                  {/* Nhập số lượng */}
                   <div className="quantity-container mt-3">
-                    <button
-                      className="quantity-btn"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    >
-                      -
-                    </button>
                     <input
                       type="number"
                       className="quantity-input"
@@ -233,30 +279,19 @@ function Product({ cartItems, setCartItems }) {
                       onChange={handleQuantityChange}
                       min="1"
                     />
-                    <button
-                      className="quantity-btn"
-                      onClick={() => setQuantity(quantity + 1)}
-                    >
-                      +
-                    </button>
                   </div>
-                  <p className="product-price text-danger fw-bold fs-4"
-                    style={{
-                    textAlign: "center",
-                    }}
-                  ></p>
-                  <button
-                    className="btn btn-primary mt-3"
-                    onClick={() => {
-                      handleAddToCart(selectedProduct);
-                      handleCloseModal();
-                    }}
-                  >
-                    Thêm vào giỏ hàng
-                  </button>
                 </div>
               </div>
               <div className="modal-footer">
+                <button
+                  className="btn btn-primary mt-3"
+                  onClick={() => {
+                    handleAddToCart(selectedProduct);
+                    handleCloseModal();
+                  }}
+                >
+                  Thêm vào giỏ hàng
+                </button>
                 <button
                   type="button"
                   className="btn btn-secondary"
