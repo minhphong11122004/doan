@@ -36,6 +36,7 @@ function Product({ cartItems, setCartItems }) {
         const response = await axios.get("https://localhost:7256/api/Sanpham");
         setProducts(response.data);
         setFilteredProducts(response.data); // Cập nhật sản phẩm khi tải xong
+        console.log(response.data);
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -238,7 +239,7 @@ function Product({ cartItems, setCartItems }) {
                     ) : (
                       <div className="carousel-item active">
                         <img
-                          src="https://i.ebayimg.com/images/g/HDEAAOSwArFc9qBa/s-l400.jpg"
+                          src=""
                           className="d-block w-100 img-thumbnail"
                           alt="Default Product Image"
                         />
