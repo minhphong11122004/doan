@@ -3,22 +3,6 @@ import axios from "axios";
 import "../css/Home.css";
 import "../css/product.css";
 
-// Hàm loại bỏ dấu tiếng Việt
-function removeAccents(str) {
-  const accents =
-    "àáạảãâầấậẩẫăằắặẳẵèéẹẻẽêềếệểễìíịỉĩòóọỏõôồốộổỗơờớợởỡùúụủũưừứựửữỳýỵỷỹđÀÁẠẢÃÂẦẤẬẨẪĂẰẮẶẲẴÈÉẸẺẼÊỀẾỆỂỄÌÍỊỈĨÒÓỌỎÕÔỒỐỘỔỖƠỜỚỢỞỠÙÚỤỦŨƯỪỨỰỬỮỲÝỴỶỸĐ";
-  const withoutAccents =
-    "aaaaaaaaaaaaaaaaaeeeeeeeeeeiiiiiooooooooooooooouuuuuuuuuuuuuuyyyddaAAAAAAAAAAAAAAAAAEEEEEEEEEEEIIIIOOOOOOOOOOOOOOUUUUUUUUUUUUUUYYYYD";
-
-  return str
-    .split("")
-    .map((char, index) => {
-      const accentIndex = accents.indexOf(char);
-      return accentIndex !== -1 ? withoutAccents[accentIndex] : char;
-    })
-    .join("");
-}
-
 function Product({ cartItems, setCartItems }) {
   const hiddenItemsRef = useRef([]); // Tham chiếu tới các sản phẩm ẩn
   const [products, setProducts] = useState([]);
@@ -43,21 +27,6 @@ function Product({ cartItems, setCartItems }) {
     };
     fetchData();
   }, []);
-
-  // Lọc sản phẩm khi searchQuery thay đổi
-  useEffect(() => {
-    const lowerSearchTerm = removeAccents(searchQuery.toLowerCase());
-    const filtered = products.filter((product) => {
-      const productName = product.productName
-        ? removeAccents(product.productName.toLowerCase())
-        : "";
-      const priceMatches = product.giaFormatted
-        ? product.giaFormatted.toString().includes(lowerSearchTerm)
-        : false;
-      return productName.includes(lowerSearchTerm) || priceMatches;
-    });
-    setFilteredProducts(filtered); // Cập nhật sản phẩm đã lọc
-  }, [searchQuery, products]);
 
   const showMore = () => {
     hiddenItemsRef.current.forEach((item) => {
@@ -135,14 +104,7 @@ function Product({ cartItems, setCartItems }) {
   return (
     <div className="container-fluid">
       <div className="row">
-        <div className="navbar-search mb-4 col-12">
-          <input
-            className="search-input"
-            placeholder="Tìm kiếm sản phẩm theo tên hoặc giá"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
+
         <h1 className="mb-5">Bộ sưu tập</h1>
         {filteredProducts.map((product, index) => (
           <div
