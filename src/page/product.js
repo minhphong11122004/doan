@@ -12,6 +12,7 @@ function Product({ cartItems, setCartItems }) {
   const [quantity, setQuantity] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedSize, setSelectedSize] = useState(""); // State cho kích cỡ đã chọn
+  const [selectedColor, setSelectedColor] = useState(""); // State cho màu sắc đã chọn
 
   // Fetch data từ API
   useEffect(() => {
@@ -20,7 +21,6 @@ function Product({ cartItems, setCartItems }) {
         const response = await axios.get("https://localhost:7256/api/Sanpham");
         setProducts(response.data);
         setFilteredProducts(response.data); // Cập nhật sản phẩm khi tải xong
-        console.log(response.data);
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -41,11 +41,13 @@ function Product({ cartItems, setCartItems }) {
   const handleShowModal = async (product) => {
     setSelectedProduct(product);
     setSelectedSize(""); // Reset size khi mở modal
+    setSelectedColor(""); // Reset color khi mở modal
     setShowModal(true);
     localStorage.setItem("productId", product.productId);
 
-    // Lấy kích cỡ đã lưu từ localStorage (nếu có)
+    // Lấy kích cỡ và màu sắc đã lưu từ localStorage (nếu có)
     const savedSize = localStorage.getItem("selectedSize");
+
     if (savedSize) {
       setSelectedSize(savedSize);
     }
@@ -57,7 +59,6 @@ function Product({ cartItems, setCartItems }) {
           `https://localhost:7256/api/Sanpham/${storedProductId}`
         );
         setSelectedProduct(response.data); // Cập nhật thông tin vào modal
-        console.log(response.data);
       }
     } catch (error) {
       console.error("Error fetching product details", error);
@@ -67,7 +68,10 @@ function Product({ cartItems, setCartItems }) {
   const handleCloseModal = () => {
     setShowModal(false);
     localStorage.removeItem("productId");
+    localStorage.removeItem("selectedSize");
+    localStorage.removeItem("selectedColor");
     setSelectedSize(""); // Reset size khi đóng modal
+    setSelectedColor(""); // Reset color khi đóng modal
   };
 
   const handleQuantityChange = (e) => {
@@ -77,21 +81,25 @@ function Product({ cartItems, setCartItems }) {
 
   const handleAddToCart = (product) => {
     if (!selectedSize) {
-      alert("Vui lòng chọn kích cỡ!");
+      alert("Vui lòng chọn kích cỡ và màu sắc!");
       return;
     }
 
-    // Lưu thông tin size vào localStorage
+    // Lưu thông tin size và color vào localStorage
     localStorage.setItem("selectedSize", selectedSize);
 
     setCartItems((prevItems) => {
       const existingItem = prevItems.find(
         (item) =>
-          item.productId === product.productId && item.size === selectedSize
+          item.productId === product.productId &&
+          item.size === selectedSize &&
+          item.color === selectedColor
       );
       if (existingItem) {
         return prevItems.map((item) =>
-          item.productId === product.productId && item.size === selectedSize
+          item.productId === product.productId &&
+          item.size === selectedSize &&
+          item.color === selectedColor
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
@@ -104,7 +112,6 @@ function Product({ cartItems, setCartItems }) {
   return (
     <div className="container-fluid">
       <div className="row">
-
         <h1 className="mb-5">Bộ sưu tập</h1>
         {filteredProducts.map((product, index) => (
           <div
@@ -270,6 +277,19 @@ function Product({ cartItems, setCartItems }) {
                         </select>
                       </div>
                     )}
+                  {/* Chọn màu sắc */}
+                  <div className="color-options">
+                    {selectedProduct?.productDetails?.[0]?.color &&
+                      selectedProduct.productDetails[0].color
+                        .split(", ")
+                        .map((color, index) => (
+                          <input
+                            type="text"
+                            className="color"
+                            value={color}
+                          ></input>
+                        ))}
+                  </div>
                   {/* Nhập số lượng */}
                   <div className="quantity-container mt-3">
                     <input

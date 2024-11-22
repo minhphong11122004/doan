@@ -22,9 +22,29 @@ function Account() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [orderDetails, setOrderDetails] = useState(null); // Chi tiết đơn hàng
+  const [showOrderModal, setShowOrderModal] = useState(false); // Trạng thái modal
 
   const [orderHistory, setOrderHistory] = useState([]); // Giữ thông tin lịch sử đơn hàng
+  const fetchOrderDetails = async (orderId) => {
+    try {
+      const response = await fetch(
+        `https://localhost:7256/api/Orders/orderDetails/${orderId}`
+      );
+      const data = await response.json();
+      console.log(data);
+      setOrderDetails(data);
+      setShowOrderModal(true);
+    } catch (error) {
+      console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
+      alert("Đã xảy ra lỗi khi lấy chi tiết đơn hàng.");
+    }
+  };
 
+  const closeModal = () => {
+    setShowOrderModal(false);
+    setOrderDetails(null);
+  };
   // Lấy thông tin người dùng và lịch sử đơn hàng khi component được render
   useEffect(() => {
     const userId = localStorage.getItem("userid");
@@ -194,7 +214,6 @@ function Account() {
           Lịch sử đơn hàng
         </div>
       </div>
-
       <div className="custom-content-container">
         {/* Tab Thông tin cá nhân */}
         <div
@@ -371,6 +390,7 @@ function Account() {
                   <th>Số điện thoại</th>
                   <th>Email</th>
                   <th>Tổng tiền</th>
+                  <th>chi tiết</th>
                 </tr>
               </thead>
               <tbody>
@@ -383,6 +403,14 @@ function Account() {
                     <td>{order.phone}</td>
                     <td>{order.email}</td>
                     <td>{order.tongTien} VND</td>
+                    <td>
+                      <button
+                        className="custom-btn"
+                        onClick={() => fetchOrderDetails(order.orderId)}
+                      >
+                        Xem chi tiết
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -390,6 +418,47 @@ function Account() {
           )}
         </div>
       </div>
+      {/* Modal Chi tiết đơn hàng */}
+      {showOrderModal && (
+        <div className="custom-modal">
+          <div className="custom-modal-content">
+            <span className="custom-close-btn" onClick={closeModal}>
+              &times;
+            </span>
+            <h3>Chi tiết đơn hàng</h3>
+            <table className="custom-order-details-table">
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th>Size</th>
+                  <th>hình</th>
+                  <th>Số lượng</th>
+                  <th>Giá</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orderDetails &&
+                  orderDetails.map((detail) => (
+                    <tr key={detail.id}>
+                      <td>{detail.productName}</td>
+                      <td>{detail.size}</td>
+                      {/* Hiển thị hình ảnh từ hinhChiTiet */}
+                      <td>
+                        <img
+                          src={detail.hinhChiTiet}
+                          alt={detail.productName}
+                          width="100"
+                        />
+                      </td>
+                      <td>{detail.quantity}</td>
+                      <td>{detail.price} VND</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

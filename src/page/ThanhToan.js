@@ -68,12 +68,13 @@ function ThanhToan() {
       Phone: phone,
       Email: email,
       TongTien: total,
-      // Lưu thông tin kích cỡ và số lượng
       orderDetails: cartItems.map((item) => ({
         productName: item.productName,
-        size: item.size || "Chưa chọn kích cỡ", // Hiển thị kích cỡ nếu có
+        hinhChiTiet: item.hinh,
+        size: item.size || "Chưa chọn kích cỡ",
+        color: item.productDetails[0].color,
         quantity: item.quantity,
-        price: item.giaFormatted,
+        price: parseInt(item.giaFormatted.replace(/[^\d]/g, "")), // Loại bỏ ký tự không phải số
       })),
     };
 
@@ -89,12 +90,7 @@ function ThanhToan() {
 
   const handlePaymentMethod = (method) => {
     setPaymentMethod(method);
-    // Gọi API để tạo đơn hàng khi chọn phương thức thanh toán
-    if (method === "COD") {
-      postOrderData("COD"); // Gọi API thanh toán khi nhận hàng
-    } else if (method === "QR") {
-      postOrderData("QR"); // Gọi API thanh toán qua QR
-    }
+    postOrderData(method); // Gọi API thanh toán theo phương thức đã chọn
   };
 
   // Gọi API gửi đơn hàng lên server
@@ -110,8 +106,10 @@ function ThanhToan() {
       orderDetails: cartItems.map((item) => ({
         productName: item.productName,
         size: item.size || "Chưa chọn kích cỡ",
+        hinhChiTiet: item.hinh,
+        color: item.productDetails[0].color,
         quantity: item.quantity,
-        price: item.giaFormatted,
+        price: parseInt(item.giaFormatted.replace(/[^\d]/g, "")),
       })),
       PaymentMethod: method, // Thêm phương thức thanh toán
     };
@@ -121,6 +119,7 @@ function ThanhToan() {
         "https://localhost:7256/api/Orders",
         orderData
       ); // Cập nhật URL API
+
       console.log("Đặt hàng thành công:", response.data);
       alert("Đơn hàng của bạn đã được tạo thành công!");
       setModalOpen(false); // Đóng modal sau khi gửi đơn hàng
@@ -186,6 +185,7 @@ function ThanhToan() {
               <th>Hình ảnh</th>
               <th>Giá</th>
               <th>Số lượng</th>
+              <th>Màu sắc</th>
               <th>Kích cỡ</th>
             </tr>
           </thead>
@@ -202,6 +202,7 @@ function ThanhToan() {
                 </td>
                 <td>{formatPrice(item.giaFormatted)}</td>
                 <td>{item.quantity}</td>
+                <td>{item.productDetails[0].color}</td>
                 <td>{item.size || "Chưa chọn kích cỡ"}</td>
               </tr>
             ))}
@@ -248,17 +249,12 @@ function ThanhToan() {
           </table>
 
           <Button color="primary" onClick={() => handlePaymentMethod("COD")}>
-            Thanh toán khi nhận hàng
+            Thanh toán trực tiếp
           </Button>
           <Button color="secondary" onClick={() => handlePaymentMethod("QR")}>
             Thanh toán qua QR
           </Button>
         </ModalBody>
-        <ModalFooter>
-          <Button color="secondary" onClick={handleCloseModal}>
-            Đóng
-          </Button>
-        </ModalFooter>
       </Modal>
     </Container>
   );
