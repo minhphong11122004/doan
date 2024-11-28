@@ -1,0 +1,627 @@
+.background2 {
+   width: 700px;
+   height: 750px;
+   position: absolute;
+   justify-content: left;
+   display: flex;
+   margin-left: 50px;
+   margin-top: 30px;
+   opacity: 0;
+   /* Bắt đầu với opacity bằng 0 */
+   animation: fadeIn 1s forwards;
+   /* Animation fadeIn */
+   animation-delay: 0.4s;
+   /* Độ trễ cho ảnh */
+}
+
+.background1 {
+   margin-top: 50px;
+   margin-left: 50px;
+   width: 700px;
+   height: 700px;
+   position: absolute;
+   opacity: 0;
+   /* Bắt đầu với opacity bằng 0 */
+   animation: fadeIn 1s forwards;
+   /* Animation fadeIn */
+   animation-delay: 0.2s;
+   /* Độ trễ cho ảnh */
+}
+
+.box {
+   width: 613px;
+   height: 408px;
+   background-color: rgba(255, 255, 255, 0.5);
+   position: absolute;
+   top: 200px;
+   opacity: 0;
+   /* Bắt đầu với opacity bằng 0 */
+   animation: fadeIn 1s forwards;
+   /* Animation fadeIn */
+   animation-delay: 0.6s;
+   /* Độ trễ cho box */
+   display: absolute;
+}
+
+@keyframes fadeIn {
+   to {
+      opacity: 1;
+      /* Kết thúc với opacity bằng 1 */
+   }
+}
+
+.product {
+   padding: 20px;
+   background-color: #f8f9fa;
+   /* Màu nền nhẹ nhàng */
+   border-radius: 8px;
+   /* Bo góc */
+   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+   /* Đổ bóng nhẹ */
+}
+
+
+
+.the {
+   position: relative;
+   overflow: hidden; /* Ensure elements don't overflow */
+   background-color: white; /* Background color for product card */
+   border-radius: 5px; /* Rounded corners */
+   padding: 15px; /* Inner spacing */
+   text-align: center; /* Center align content */
+   margin-bottom: 20px; /* Space between cards */
+   cursor: pointer;
+   transition: transform 0.3s, box-shadow 0.3s, all 0.3s ease;
+ }
+ 
+ .the img {
+   width: 100%;
+   transition: all 0.3s ease; /* Smooth hover effect */
+   border-radius: 5px; /* Rounded corners for images */
+  
+ }
+ 
+
+ 
+ .the .hover-buttons-container {
+   position: absolute;
+   width: 80%;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   z-index: 2; /* Above dark overlay */
+   opacity: 0; /* Hidden initially */
+   transition: all 0.3s ease;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   gap: 10px; /* Space between elements */
+ }
+
+ .the:hover {
+   transform: translateY(-5px); /* Slight lift on hover */
+   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Enhanced shadow */
+ }
+ 
+ .the:hover img {
+   filter: brightness(0.7); /* Dim the image */
+ }
+ 
+ .the:hover .hover-buttons-container {
+   opacity: 1; /* Show buttons on hover */
+ }
+ 
+ .hover-buttons{
+   width: 90%;
+ }
+ /* Style for the buttons */
+ .hover-buttons button {
+   background-color: white;
+   color: #ff6600; /* Orange text */
+   padding: 10px 20px;
+   border: none;
+   width: 90%;
+   border-radius: 5px;
+   cursor: pointer;
+   font-size: 16px;
+   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+   transition: background-color 0.3s ease, color 0.3s ease;
+ }
+ 
+ .hover-buttons button:hover {
+   background-color: #ff6600; /* Orange background on hover */
+   color: white; /* White text */
+ }
+
+
+ 
+ .hover-icons  {
+   
+   display: flex;
+   gap: 100px; /* Space between icons */
+   font-size: 18px;
+   color: white;
+   cursor: pointer;
+   transition: transform 0.3s ease, color 0.3s ease;
+ }
+
+ .hover-icons i:hover {
+   color: #ff6600; /* Change to orange on hover */
+   transform: scale(1.2); /* Slight zoom effect */
+ }
+
+.the:hover {
+   transform: translateY(-5px);
+   /* Nâng thẻ lên khi hover */
+   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+   /* Tăng độ đổ bóng khi hover */
+}
+
+
+
+h2 {
+   font-size: 1.2em;
+   /* Kích thước tiêu đề */
+   color: #333;
+   /* Màu chữ tiêu đề */
+   margin: 10px 0;
+   /* Khoảng cách trên dưới */
+}
+
+.mota {
+   font-size: 0.9em;
+   /* Kích thước mô tả */
+   color: #666;
+   /* Màu chữ mô tả */
+   margin: 5px 0;
+   /* Khoảng cách trên dưới */
+}
+
+.giatien {
+   font-weight: bold;
+   /* Chữ đậm cho giá */
+   font-size: 1.1em;
+   /* Kích thước giá */
+   color: #e63946;
+   /* Màu chữ cho giá */
+}
+
+.header {
+   width: 100%;
+   height: 800px;
+   background-color: rgb(253, 227, 197);
+}
+
+.button1 {
+   width: 240px;
+   height: 80px;
+   background-color: rgb(255, 185, 54);
+   color: white;
+   margin-top: 120px;
+   text-align: center;
+   font-size: 20px;
+   box-shadow: #333;
+
+}
+
+
+.logo {
+   width: 100%;
+   height: 100%;
+   justify-content: center;
+   align-items: center;
+   display: flex;
+}
+
+#product2 {
+   width: 100%;
+   height: 800px;
+
+
+}
+
+
+
+
+#Show {
+   width: 240px;
+   height: 80px;
+   background-color: white;
+   color: orange;
+   margin-top: 12px;
+   font-size: 20px;
+   cursor: pointer;
+   margin-bottom: 20px;
+   border-radius: 8px;
+   /* Bo góc */
+   transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+   /* Hiệu ứng chuyển động */
+}
+
+#Show:hover {
+   background-color: orange;
+   color: white;
+   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+   /* Đổ bóng */
+   transform: scale(1.05);
+   /* Tăng kích thước */
+}
+
+
+.contact {
+   width: 1500px;
+   height: 400px;
+
+   display: flex;
+   background-color: white;
+
+}
+
+.thongtin {
+   width: 303px;
+   height: 400px;
+   margin-top: 10px;
+   display: block;
+
+}
+
+.gioithieu {
+   width: 303px;
+   height: 400px;
+   margin-top: 10px;
+   display: block;
+}
+
+.taikhoan {
+   width: 303px;
+   height: 400px;
+   margin-top: 10px;
+   display: block;
+}
+
+.lienhe {
+   width: 303px;
+   height: 400px;
+   margin-top: 10px;
+   display: block;
+}
+
+.phanhoi1 {
+   width: 200px !important;
+   border-radius: 0px !important;
+   border: 1px solid #ccc;
+   /* Viền xung quanh */
+   border-radius: 4px;
+   height: 30px;
+   background-color: white;
+}
+
+.phanhoi1:focus {
+   border-color: orange;
+   /* Đổi màu viền khi focus */
+   outline: none;
+   /* Xóa outline mặc định */
+}
+
+.phanhoi {
+   width: 254px;
+   height: 350px;
+
+   text-align: left;
+
+  
+}
+
+#gui {
+
+   padding: 0px;
+   width: 50px;
+   height: 30px;
+   background-color: rgb(253, 227, 197);
+   color: white;
+   font-size: 18px;
+   border: none;
+
+   cursor: pointer;
+   transition: background-color 0.3s, transform 0.3s;
+
+}
+
+#gui:hover {
+   background-color: orange;
+   /* Màu nền khi hover */
+   color: white;
+   transform: scale(1.05);
+   /* Tăng kích thước khi hover */
+}
+
+.introduce {
+   width: 100%;
+   height: 800px;
+   background-color: rgb(253, 227, 197);
+   display: flex;
+
+
+}
+
+.intro {
+   margin-top: 20px;
+   font-size: 50px;
+
+}
+
+.introduce1 {
+   width: 800px;
+   float: left;
+   display: block;
+   text-align: left;
+   margin-left: 50px;
+   margin-top: 50px;
+}
+
+.in {
+   font-size: 30px;
+   margin-top: 50px;
+}
+
+.cam {
+   background-color: orange;
+   width: 200px;
+   height: 60px;
+   margin-top: 50px;
+}
+
+.introduce2 {
+   display: block;
+   overflow: hidden;
+   width: 800px;
+   margin-left: 50px;
+   text-align: center;
+   /* Căn giữa nội dung */
+}
+
+.minhhoa {
+   display: flex;
+   width: 600px;
+   height: 600px;
+   margin-right: 20px;
+   margin-top: 60px;
+   transition: opacity 0.5s ease-in-out;
+   opacity: 0;
+   /* Mặc định là mờ */
+   position: absolute;
+
+}
+
+.hidden {
+   display: none;
+}
+
+/* Home.css */
+.slick-dots {
+   bottom: 10px;
+   /* Vị trí của dots */
+}
+
+.slick-dots li button:before {
+   font-size: 12px;
+   /* Kích thước của dot */
+   color: #fff;
+   /* Màu sắc của dot */
+}
+
+.slick-dots li.slick-active button:before {
+   color: #f00;
+   /* Màu sắc của dot khi đang active */
+}
+
+.slick-slide img {
+   width: 100%;
+   /* Đảm bảo hình ảnh đầy đủ chiều rộng */
+   border-radius: 10px;
+   /* Bo góc cho hình ảnh nếu cần */
+}
+
+.button-ctn {
+   margin-top: 100px;
+   /* Khoảng cách giữa hình ảnh và nút */
+}
+
+.button-ctn button {
+   margin: 0 10px;
+   /* Khoảng cách giữa hai nút */
+}
+
+.visible {
+   opacity: 1;
+   /* Đặt độ mờ cho hình ảnh hiện tại */
+}
+.QuangCao{
+   height: 200px;
+}
+.QuangCao2{
+   display: flex;
+   justify-content:space-evenly;
+   padding-top: 50px;
+   text-align: start;
+   height: 200px;
+}
+.ChatLieu{
+
+   width: 300px;
+}
+.BaoHanh{
+   width: 200px;
+}
+.PhiGiaoHang{
+   width: 250px;
+}
+.HoTro{
+   width: 200px;
+}
+.ChiTiet{
+   color: rgb(137, 137, 137);
+}
+.feature-icon{
+ 
+   height: 40px;
+
+   
+   
+}
+.icon{
+	width: 3rem;
+}
+.item{
+	width: 100%;
+}
+/* Hero section */
+.hero-section {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 40px;
+   background-color: #fefaf4;
+   height: 700px;
+ }
+ 
+ .hero-content {
+   max-width: 40%;
+ }
+ 
+ .hero-content h1 {
+   font-size: 36px;
+   margin-bottom: 20px;
+ }
+ 
+ .hero-content p {
+   font-size: 16px;
+   margin-bottom: 20px;
+ }
+ 
+ .btn {
+   padding: 10px 20px;
+   background-color: #ff6600;
+   color: #fff;
+   border: none;
+   cursor: pointer;
+   font-size: 16px;
+ }
+ 
+ /* Slider styles */
+ .hero-slider {
+   position: relative;
+   width: 100%;  /* Điều chỉnh rộng hơn để phù hợp với 2 ảnh */
+   height: 600px; /* Chiều cao tổng thể của slider */
+   overflow: hidden;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   border: none;
+  
+ }
+ 
+ .slider-container {
+   width: 100%;
+   height: 100%;
+   overflow: hidden;
+   
+  
+ }
+ 
+ .slider-wrapper {
+   display: flex;
+   transition: transform 0.5s ease-in-out;
+   margin-top: 50px;
+   height: 100%;
+ }
+ 
+ .slider-item {
+   flex: 0 0 50%; /* Hiển thị 2 ảnh trong khung nhìn */
+   height: auto;
+   max-height: 80%; /* Ảnh sẽ được thu nhỏ lại nhưng vẫn giữ tỉ lệ */
+   
+   object-fit: contain; /* Đảm bảo không làm méo ảnh */
+   padding-left: 10px;
+   padding-right: 10px;
+   box-sizing: border-box;
+   border: none; /* Thêm viền để dễ nhìn */
+   transition: transform 0.5s ease; /* Thêm hiệu ứng cho ảnh */
+   
+ }
+ 
+ /* Khi ảnh được focus, sẽ phóng to */
+ .slider-item.active {
+   transform: scaleY(1.2) scaleX(1.2);
+   z-index: 2; /* Đảm bảo ảnh đang được focus hiển thị trên các ảnh khác */
+   padding-left: 20px;
+   padding-right: 20px; /* Tăng khoảng cách khi phóng to */
+ }
+ 
+ /* Navigation arrows */
+ .arrow {
+   position: absolute;
+   top: 50%;
+   transform: translateY(-50%);
+   background-color: rgba(0, 0, 0, 0.5);
+   color: #fff;
+   border: none;
+   cursor: pointer;
+   font-size: 20px;
+   width: 40px;
+   height: 40px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   border-radius: 50%;
+   z-index: 10;
+ }
+ 
+ .left-arrow {
+   left: 10px;
+ }
+ 
+ .right-arrow {
+   right: 10px;
+ }
+ .anh1{
+   width: 10px;
+   
+ }
+ /* Pagination (dots) styles */
+.pagination {
+
+   bottom: 10px;
+   display: flex;
+   justify-content: center;
+
+  
+ }
+ 
+ .dot {
+   width: 10px;
+   height: 10px;
+   margin: 0 5px;
+   background-color: #bbb;
+   border-radius: 50%;
+   display: inline-block;
+   cursor: pointer;
+   transition: background-color 0.3s ease;
+ }
+ 
+ .dot.active {
+   background-color: #ff6600; /* Màu khi nút đang được chọn */
+ }
+ .slider{
+   width: 100%;
+   height: 100%;
+   margin-bottom: 100px;
+   
+ }
+ .h4{
+   font-size: 1rem !important;
+ }
+ .ts-dropdown-content{
+   text-align: left !important;;
+ }
+
